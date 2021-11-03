@@ -1,25 +1,28 @@
-<template>
-    <div class="toolInfo">
-        <div class="toolUserInfo">
-          <h1 id="complitedCount" class="pointerCursor" @click="setTasks">{{comlitedTasks}}</h1>
-          <h2 id="complitedStatus">Completed Tasks</h2>
-        </div>
-        <div class="toolUserInfo">
-          <h1 id="openCount">{{openTasks}}</h1>
-          <h2 id="openStatus">Open Tasks</h2>
-        </div>
-      </div>
+<template lang="pug">
+.toolInfo
+  .toolUserInfo
+    h1#complitedCount.pointerCursor(@click="setTasks") {{comlitedTasks}}
+    h2#complitedStatus Completed Tasks
+  .toolUserInfo
+    h1#openCount {{openTasks}}
+    h2#openStatus Open Tasks
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ITaskStatus from '../types/tasksstatus.interfaces'
+
+const dataTasks: ITaskStatus = {
+  comlitedTasks: 372,
+  openTasks: 11
+}
 
 export default defineComponent({
   name: 'TasksStatus',
   data () {
     return {
-      comlitedTasks: 372,
-      openTasks: 11
+      comlitedTasks: dataTasks.comlitedTasks,
+      openTasks: dataTasks.openTasks
     }
   },
   methods: {

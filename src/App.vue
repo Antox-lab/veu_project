@@ -1,75 +1,35 @@
-<template>
-  <div id="main">
-    <section class="toolBar">
-      <div class="toolLogo">
-        <img src="./assets/Logo@3x.svg" alt="Logo" />
-        <span>PROJECTUS</span>
-        <button class="searchBtn">
-          <img src="./assets/Search@3x.svg" alt="Search" />
-        </button>
-      </div>
-      <ActiveUser :userName=items.name :userStatus=items.status :userPhoto=items.photo />
-      <TasksStatus/>
-      <div class="toolMenu">
-        <h1 id="menuCaption" onclick="setMenuContentVisible()">MENU</h1>
-        <div class="menuContent">
-          <a href="#" class="menuLink">Home</a>
-          <a href="#" class="menuLink">My Tasks</a>
-          <div class="notificationConteiner">
-            <a href="#" class="menuLink">Notification</a>
-            <div id="notificationCount">{{notificationCount}}</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <div class="contentBar">
-      <header>
-        <div class="headSection">
-          <div class="titleBannersItem">
-            <div class="titleLogo">
-              <img src="./assets/Shapes@2x.png" alt="Logo" />
-            </div>
-            <span>Website Redesign</span>
-            <button class="buttons bannerBut">···</button>
-          </div>
-          <TitleBanner/>
-        </div>
-        <nav>
-          <router-link
-            to="/"
-            class="links linkPassive"
-            active-class="linkActive"
-            >Tasks</router-link
-          >
-          <router-link
-            to="/kanban"
-            class="links linkPassive"
-            active-class="linkActive"
-            >Kanban</router-link
-          >
-          <router-link
-            to="/activity"
-            class="links linkPassive"
-            active-class="linkActive"
-            >Activity</router-link
-          >
-          <router-link
-            to="/calendar"
-            class="links linkPassive"
-            active-class="linkActive"
-            >Calendar</router-link
-          >
-          <router-link
-            to="/files"
-            class="links linkPassive"
-            active-class="linkActive"
-            >Files</router-link
-          >
-        </nav>
-      </header>
-      <router-view @sendIndex="notificationCount = $event"/>
-    </div>
-  </div>
+<template lang="pug">
+#main
+  .toolBar
+    .toolLogo
+      img(src="./assets/Logo@3x.svg" alt="Logo")
+      span PROJECTUS
+      button.searchBtn
+        img(src="./assets/Search@3x.svg" alt="Search")
+    ActiveUser(:userName="items.name" :userStatus="items.status" :userPhoto="items.photo")
+    TasksStatus
+    .toolMenu
+      h1#menuCaption(onclick="setMenuContentVisible()") MENU
+      .menuContent
+        a.menuLink(href="#") Home
+        a.menuLink(href="#") My Tasks
+        .notificationConteiner
+          a.menuLink(href="#") Notification
+          #notificationCount {{notificationCount}}
+  .contentBar
+    header
+      .headSection
+        .titleBannersItem
+          .titleLogo
+            img(src="./assets/Shapes@2x.png" alt="Logo")
+          span Website Redesign
+          button.buttons.bannerBut ···
+        TitleBanner
+        - const dataRoute = {'Tasks': '/', 'Kanban': '/Kanban', 'Activity': '/Activity', 'Calendar': '/Calendar', 'Files': '/Files'}
+      nav
+        each path, name in dataRoute
+          router-link.links.linkPassive(to=`${path}` active-class="linkActive")=`${name}`
+    router-view(@sendIndex="notificationCount = $event")
 </template>
 
 <script lang="ts">
@@ -77,6 +37,17 @@ import { defineComponent } from 'vue'
 import ActiveUser from './components/ActiveUser.vue'
 import TasksStatus from './components/TasksStatus.vue'
 import TitleBanner from './components/TitleBanner.vue'
+import { IApp, INotification } from './types/app.interfaces'
+
+const dataApp: IApp = {
+  name: 'Jane',
+  status: 'Owner',
+  photo: 'img/user_active.png'
+}
+
+const dataCount: INotification = {
+  notificationCount: 0
+}
 
 export default defineComponent({
   name: 'App',
@@ -87,12 +58,8 @@ export default defineComponent({
   },
   data () {
     return {
-      items: {
-        name: 'Jane',
-        status: 'Owner',
-        photo: 'img/user_active.png'
-      },
-      notificationCount: 0
+      items: dataApp,
+      notificationCount: dataCount.notificationCount
     }
   }
 })

@@ -1,5 +1,4 @@
-<template>
-    <div class="content">
-    <h1 class="todayCaption">CALENDAR</h1>
-    </div>
+<template lang="pug">
+.content
+  h1.todayCaption CALENDAR
 </template>

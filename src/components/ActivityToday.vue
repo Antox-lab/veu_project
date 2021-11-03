@@ -1,34 +1,31 @@
-<template>
-<div>
-    <div class="messageSection">
-      <img class="messageIcon" :src=image alt="Check" />
-      <p class="messageText">
-        {{message}}
-      </p>
-      <span class="messageTime">{{time}}</span>
-    </div>
-    <div v-if="outpost">
-      <p class="messageOutpost">{{outpost}}</p>
-    </div>
-    <div v-if="images" class="messageOutpostImages">
-        <img class="outpostImages pointerCursor"
-        v-for="(img, i) in images"
-        :src="img.photo"
-        :alt="img.name"
-        :key="i"
-        @click="getImageIndex(i)"/>
-    </div>
-</div>
+<template lang="pug">
+div
+    .messageSection
+      img.messageIcon(:src="image" alt="Check")
+      p.messageText {{message}}
+      span.messageTime {{time}}
+
+    div(v-if="outpost")
+      p.messageOutpost {{outpost}}
+    div.messageOutpostImages(v-if="images")
+        img.outpostImages.pointerCursor(
+          v-for="(img, i) in images"
+          :src="img.imageItem"
+          :alt="img.name"
+          :key="i"
+          @click="getImageIndex({value: i})"
+          )
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import IActivityToday from '../types/activitytoday.interfaces'
 
 export default defineComponent({
   name: 'ActivityToday',
   methods: {
-    getImageIndex: function (value: number) {
-      this.$emit('sendImageIndex', value)
+    getImageIndex: function (activity: IActivityToday) {
+      this.$emit('sendImageIndex', activity.value)
     }
   },
   props: {

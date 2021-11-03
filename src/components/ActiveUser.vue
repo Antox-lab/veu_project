@@ -1,12 +1,10 @@
-<template>
-  <div class="toolUser">
-    <img id="userPhoto" :src=userPhoto alt="ActiveUser" />
-    <div class="toolUserName">
-      <h1 id="userName">{{ userName }}</h1>
-      <h2 id="userStatus">{{ userStatus }}</h2>
-    </div>
-    <button class="buttons userBut">···</button>
-  </div>
+<template lang="pug">
+.toolUser
+    img#userPhoto(:src="userPhoto" alt="ActiveUser")
+    .toolUserName
+      h1#userName {{ userName }}
+      h2#userStatus {{ userStatus }}
+    button.buttons.userBut ···
 </template>
 
 <script lang="ts">

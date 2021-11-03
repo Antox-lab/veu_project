@@ -1,5 +1,4 @@
-<template>
-    <div class="content">
-    <h1 class="todayCaption">KANBAN</h1>
-    </div>
+<template lang="pug">
+.content
+    h1.todayCaption KANBAN
 </template>

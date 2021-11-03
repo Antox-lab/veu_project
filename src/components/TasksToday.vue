@@ -1,14 +1,10 @@
-<template>
-<div>
-    <h2 class="taskName">{{name}}</h2>
-    <div class="messageSection">
-      <img class="messageIcon" :src=image :alt=alt :title=title />
-      <p class="messageText">
-        {{message}}
-      </p>
-      <span class="messageTime">{{time}}</span>
-    </div>
-</div>
+<template lang="pug">
+div
+  h2.taskName {{name}}
+  .messageSection
+    img.messageIcon(:src="image" :alt="alt" :title="title")
+    p.messageText {{message}}
+    span.messageTime {{time}}
 </template>
 
 <script lang="ts">
