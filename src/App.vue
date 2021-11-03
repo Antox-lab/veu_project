@@ -172,7 +172,7 @@ nav {
 
 .contentBar {
   background-color: #eeebe5;
-  @include WH(117rem, 100%);
+  @include WH(100%, 100%);
 }
 
 .headSection {
@@ -321,7 +321,7 @@ nav {
   display: flex;
   flex-direction: column;
   background-color: $black;
-  @include WH(27rem, 100%);
+  @include WH(30rem, 100%);
 }
 
 .toolLogo {
