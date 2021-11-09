@@ -38,3 +38,25 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+
+#complitedCount,
+#openCount {
+  color: #fff;
+  font-size: 1.4rem;
+  padding-bottom: 0.2rem;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#complitedStatus,
+#openStatus {
+  color: #fff;
+  opacity: 0.5;
+  font-size: 1.2rem;
+}
+</style>

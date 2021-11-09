@@ -19,3 +19,37 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+$white: #fff;
+
+@mixin WH($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+.userBut {
+  color: #d8d8d8;
+  font-size: 2.4rem;
+  @include WH(3rem, 3rem);
+  background-color: #000;
+  &:hover {
+    color: $white;
+  }
+}
+
+#userName {
+  color: $white;
+  font-size: 1.4rem;
+  padding-bottom: 0.2rem;
+}
+
+#userStatus {
+  color: #9b9b9b;
+  font-size: 1.2rem;
+}
+
+#userPhoto {
+  @include WH(4.8rem, 4.8rem);
+}
+</style>

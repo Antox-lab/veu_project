@@ -1,18 +1,18 @@
 <template lang="pug">
-.content
-    h1.todayCaption TASKS
-    div(v-for="(item, i) in items" :key="i")
-      hr
-      TasksToday(:name="i + 1 + '. ' + item.name"
-      :image="item.photo"
-      :message="item.message"
-      :time="item.time"
-      :alt="item.alt"
-      :title="item.alt")
+content-bar(title="tasks")
+  div(v-for="(item, i) in items" :key="i")
+    hr
+    tasks-today(:name="i + 1 + '. ' + item.name"
+    :image="item.photo"
+    :message="item.message"
+    :time="item.time"
+    :alt="item.alt"
+    :title="item.alt")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ContentBar from '../components/ContentBar.vue'
 import TasksToday from '../components/TasksToday.vue'
 import ITask from '../types/tasks.interfaces'
 
@@ -57,6 +57,7 @@ const taskData: ITask[] = [
 export default defineComponent({
   name: 'Tasks',
   components: {
+    ContentBar,
     TasksToday
   },
   data () {
