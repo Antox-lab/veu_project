@@ -1,6 +1,6 @@
-import ITitleBanner from './titlebanner.interfaces'
+import IHeaderTitlebanner from './headertitlebanner.interfaces'
 
-export default interface ITasks extends ITitleBanner {
+export default interface ITasks extends IHeaderTitlebanner {
     message: string,
     time: string,
     alt: string

@@ -1,7 +1,7 @@
 <template lang="pug">
-content-bar(title="activity")
+base-content(title="activity")
     div(v-for="(item, i) in items" :key="i")
-      activity-today(:image="item.photo"
+      content-activity(:image="item.photo"
       :message="item.message"
       :time="item.time"
       :outpost="item.outpost"
@@ -11,8 +11,8 @@ content-bar(title="activity")
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ContentBar from '../components/ContentBar.vue'
-import ActivityToday from '../components/ActivityToday.vue'
+import BaseContent from '../components/BaseContent.vue'
+import ContentActivity from '../components/ContentActivity.vue'
 import IActivity from '../types/activity.interfaces'
 
 const dataActivity: IActivity[] = [
@@ -45,8 +45,8 @@ const dataActivity: IActivity[] = [
 export default defineComponent({
   name: 'Activity',
   components: {
-    ContentBar,
-    ActivityToday
+    BaseContent,
+    ContentActivity
   },
   data () {
     return {

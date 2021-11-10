@@ -1,4 +1,4 @@
-export interface IApp {
+export interface ILayout {
     name: string,
     status: string,
     photo: string,

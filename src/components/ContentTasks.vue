@@ -11,7 +11,7 @@ div
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'TasksToday',
+  name: 'ContentTasks',
   props: {
     name: String,
     image: String,

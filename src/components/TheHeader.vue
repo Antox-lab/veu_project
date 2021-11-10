@@ -6,7 +6,7 @@ header
         img(src="../assets/Shapes@2x.png" alt="Logo")
       span Website Redesign
       button.buttons.bannerBut ···
-    title-banner
+    header-titlebanner
     - const dataRoute = {'Tasks': '/', 'Kanban': '/Kanban', 'Activity': '/Activity', 'Calendar': '/Calendar', 'Files': '/Files'}
   nav
     each path, name in dataRoute
@@ -15,12 +15,12 @@ header
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TitleBanner from '../components/TitleBanner.vue'
+import HeaderTitlebanner from '../components/HeaderTitlebanner.vue'
 
 export default defineComponent({
-  name: 'HeaderBar',
+  name: 'TheHeader',
   components: {
-    TitleBanner
+    HeaderTitlebanner
   }
 })
 </script>

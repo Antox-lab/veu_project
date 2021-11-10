@@ -10,15 +10,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ITaskStatus from '../types/tasksstatus.interfaces'
+import ISidebarTaskStatus from '../types/sidebartasksstatus.interfaces'
 
-const dataTasks: ITaskStatus = {
+const dataTasks: ISidebarTaskStatus = {
   comlitedTasks: 372,
   openTasks: 11
 }
 
 export default defineComponent({
-  name: 'TasksStatus',
+  name: 'SidebarTasksStatus',
   data () {
     return {
       comlitedTasks: dataTasks.comlitedTasks,

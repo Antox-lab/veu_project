@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ContentBar',
+  name: 'BaseContent',
   props: {
     title: String
   }

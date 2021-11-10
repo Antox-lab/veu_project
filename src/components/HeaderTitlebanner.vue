@@ -15,16 +15,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ITitleBanner from '../types/titlebanner.interfaces'
+import IHeaderTitlebanner from '../types/headertitlebanner.interfaces'
 
-const titleBannerItems: ITitleBanner[] = [
+const titleBannerItems: IHeaderTitlebanner[] = [
   { name: 'User1', photo: './img/user_1.png' },
   { name: 'User2', photo: './img/user_2.png' },
   { name: 'User3', photo: './img/user_3.png' }
 ]
 
 export default defineComponent({
-  name: 'TitleBanner',
+  name: 'HeaderTitlebanner',
   data () {
     return {
       items: titleBannerItems

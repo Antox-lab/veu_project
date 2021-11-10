@@ -1,15 +1,15 @@
 <template lang="pug">
-content-bar(title="calendar")
+base-content(title="calendar")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ContentBar from '../components/ContentBar.vue'
+import BaseContent from '../components/BaseContent.vue'
 
 export default defineComponent({
   name: 'Calendar',
   components: {
-    ContentBar
+    BaseContent
   }
 })
 </script>

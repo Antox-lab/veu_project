@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'ActiveUser',
+  name: 'SidebarActiveUser',
   props: {
     userName: String,
     userStatus: String,

@@ -1,16 +1,16 @@
 <template lang="pug">
 #main
-  side-bar(:notificationCount="notificationCount")
+  the-sidebar(:notificationCount="notificationCount")
   .contentBar
-    header-bar
+    the-header
     router-view(@sendIndex="notificationCount = $event")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SideBar from './components/SideBar.vue'
-import HeaderBar from './components/HeaderBar.vue'
-import { INotification } from './types/app.interfaces'
+import TheSidebar from './components/TheSidebar.vue'
+import TheHeader from './components/TheHeader.vue'
+import { INotification } from './types/layout.interfaces'
 
 const dataCount: INotification = {
   notificationCount: 0
@@ -19,8 +19,8 @@ const dataCount: INotification = {
 export default defineComponent({
   name: 'Layout',
   components: {
-    SideBar,
-    HeaderBar
+    TheSidebar,
+    TheHeader
   },
   data () {
     return {

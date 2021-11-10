@@ -19,12 +19,12 @@ div
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import IActivityToday from '../types/activitytoday.interfaces'
+import IContentActivity from '../types/contentactivity.interfaces'
 
 export default defineComponent({
-  name: 'ActivityToday',
+  name: 'ContentActivity',
   methods: {
-    getImageIndex: function (activity: IActivityToday) {
+    getImageIndex: function (activity: IContentActivity) {
       this.$emit('sendImageIndex', activity.value)
     }
   },

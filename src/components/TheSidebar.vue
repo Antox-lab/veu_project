@@ -5,8 +5,8 @@
     span PROJECTUS
     button.searchBtn
       img(src="../assets/Search@3x.svg" alt="Search")
-  active-user(:userName="items.name" :userStatus="items.status" :userPhoto="items.photo")
-  tasks-status
+  sidebar-active-user(:userName="items.name" :userStatus="items.status" :userPhoto="items.photo")
+  sidebar-tasks-status
   .toolMenu
     h1#menuCaption(onclick="setMenuContentVisible()") MENU
     .menuContent
@@ -19,21 +19,21 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ActiveUser from './ActiveUser.vue'
-import TasksStatus from './TasksStatus.vue'
-import { IApp } from '../types/app.interfaces'
+import SidebarActiveUser from './SidebarActiveUser.vue'
+import SidebarTasksStatus from './SidebarTasksStatus.vue'
+import { ILayout } from '../types/layout.interfaces'
 
-const dataApp: IApp = {
+const dataApp: ILayout = {
   name: 'Jane',
   status: 'Owner',
   photo: 'img/user_active.png'
 }
 
 export default defineComponent({
-  name: 'SideBar',
+  name: 'TheSidebar',
   components: {
-    ActiveUser,
-    TasksStatus
+    SidebarActiveUser,
+    SidebarTasksStatus
   },
   data () {
     return {
