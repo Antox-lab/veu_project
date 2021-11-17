@@ -8,7 +8,7 @@
   sidebar-active-user(:userName="items.name" :userStatus="items.status" :userPhoto="items.photo")
   sidebar-tasks-status
   .toolMenu
-    h1#menuCaption(onclick="setMenuContentVisible()") MENU
+    h1#menuCaption MENU
     .menuContent
       a.menuLink(href="#") Home
       a.menuLink(href="#") My Tasks

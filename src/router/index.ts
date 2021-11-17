@@ -3,13 +3,14 @@ import Activity from '../views/Activity.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/Tasks',
+    alias: '/',
     name: 'Tasks',
     component: () =>
       import('../views/Tasks.vue')
   },
   {
-    path: '/kanban',
+    path: '/Comingkanban',
     name: 'Kanban',
     component: () =>
       import('../views/Kanban.vue')
@@ -20,14 +21,19 @@ const routes: Array<RouteRecordRaw> = [
     component: Activity
   },
   {
-    path: '/calendar',
+    path: '/Comingcalendar',
     name: 'Calendar',
     component: () => import('../views/Calendar.vue')
   },
   {
-    path: '/files',
+    path: '/Comingfiles',
     name: 'Files',
     component: () => import('../views/Files.vue')
+  },
+  {
+    path: '/:notView(.*)*',
+    name: 'notView',
+    component: () => import('../views/NotView.vue')
   }
 ]
 

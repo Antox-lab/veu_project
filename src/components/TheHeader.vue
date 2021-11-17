@@ -7,7 +7,7 @@ header
       span Website Redesign
       button.buttons.bannerBut ···
     header-titlebanner
-    - const dataRoute = {'Tasks': '/', 'Kanban': '/Kanban', 'Activity': '/Activity', 'Calendar': '/Calendar', 'Files': '/Files'}
+    - const dataRoute = {'Tasks': '/Tasks', 'Kanban': '/Kanban', 'Activity': '/Activity', 'Calendar': '/Calendar', 'Files': '/Files'}
   nav
     each path, name in dataRoute
       router-link.links.linkPassive(to=`${path}` active-class="linkActive")=`${name}`
