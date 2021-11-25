@@ -19,7 +19,7 @@ export default defineComponent({
 .todayCaption {
   font-size: 1.4rem;
   color: #131313;
-  padding: 3.5rem 0 3rem 3rem;
+  padding: 3.5rem 0 2rem 3rem;
   opacity: 0.5;
   text-transform: uppercase;
 }
