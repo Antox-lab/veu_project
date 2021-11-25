@@ -5,6 +5,8 @@ div
     img.messageIcon(:src="image" :alt="alt" :title="title")
     p.messageText {{message}}
     span.messageTime {{time}}
+    button.trashButton(title="Delete task" @click="getTaskIndex")
+      img(src="../assets/trash.png" alt="Trash")
 </template>
 
 <script lang="ts">
@@ -19,6 +21,11 @@ export default defineComponent({
     time: String,
     alt: String,
     title: String
+  },
+  methods: {
+    getTaskIndex: function () {
+      this.$emit('getTaskIndex')
+    }
   }
 })
 </script>
@@ -35,7 +42,7 @@ $c13: #131313;
   font-size: 1.6rem;
   color: $c13;
   line-height: 2rem;
-  padding: 0 12.5rem 0 2rem;
+  padding: 0 0 0 2rem;
   margin: 0;
   width: 42rem;
   cursor: pointer;
@@ -57,5 +64,19 @@ $c13: #131313;
   margin: 1rem 0 0 10rem;
   font-style: italic;
   opacity: 0.8;
+}
+
+.trashButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 2rem;
+  & img {
+    opacity: 0.4;
+    transition: 0.3s;
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 </style>

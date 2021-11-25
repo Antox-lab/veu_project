@@ -105,6 +105,7 @@ body {
   @include WH(73rem, 59.1rem);
   background-color: $white;
   border-radius: 0.8rem;
+  overflow-y: auto;
 }
 
 .contentBar {
