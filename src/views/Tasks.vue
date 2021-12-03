@@ -29,6 +29,8 @@ base-content(title="tasks")
     :time="item.time"
     :alt="item.alt"
     :title="item.alt"
+    :addAnimate="i == items.length - 1 && addTaskAnimate ? true : false"
+    :slideAnimateIndex="i"
     @getTaskIndex="taskDelete(i)")
 </template>
 
@@ -39,43 +41,7 @@ import ContentTasks from '../components/ContentTasks.vue'
 import ITasks from '../types/tasks.interfaces'
 import IAddData from '../types/tasks.addData'
 
-const taskData: ITasks[] = [
-  {
-    name: 'Vue introduce',
-    message: 'Make a project using vue js.',
-    photo: 'img/check.png',
-    time: '24.10.21',
-    alt: 'Done'
-  },
-  {
-    name: 'Components introduce',
-    message: 'Create separate components for active content',
-    photo: 'img/check.png',
-    time: '25.10.21',
-    alt: 'Done'
-  },
-  {
-    name: 'Application migration',
-    message: 'Save application logic from the previous project',
-    photo: 'img/message.png',
-    time: '26.10.21',
-    alt: 'In process'
-  },
-  {
-    name: 'Data as array',
-    message: 'Load content data from a dataset',
-    photo: 'img/check.png',
-    time: '27.10.21',
-    alt: 'Done'
-  },
-  {
-    name: 'GitHub push',
-    message: 'Create a repository on GitHub',
-    photo: 'img/message.png',
-    time: '28.10.21',
-    alt: 'In process'
-  }
-]
+const taskData: ITasks[] = []
 
 const addData: IAddData = {
   formShow: true,
@@ -85,7 +51,8 @@ const addData: IAddData = {
   showError: false,
   errors: '',
   inputIndicate: false,
-  textareaIndicate: false
+  textareaIndicate: false,
+  addTaskAnimate: false
 }
 
 export default defineComponent({
@@ -104,12 +71,23 @@ export default defineComponent({
       showError: addData.showError,
       errors: addData.errors,
       inputIndicate: addData.inputIndicate,
-      textareaIndicate: addData.textareaIndicate
+      textareaIndicate: addData.textareaIndicate,
+      addTaskAnimate: addData.addTaskAnimate
     }
+  },
+  created () {
+    fetch('data/taskData.json')
+      .then((responce) => {
+        return responce.json()
+      })
+      .then((data) => {
+        this.items = data
+      })
   },
   methods: {
     taskDelete: function (i: number) {
       this.items.splice(i, 1)
+      this.addTaskAnimate = false
     },
     visibleAddForm: function () {
       this.formShow = !this.formShow
@@ -129,6 +107,7 @@ export default defineComponent({
       const mm = date.getMonth() + 1
       const yy = date.getFullYear() % 100
       this.date = `${dd}.${mm}.${yy}`
+      this.addTaskAnimate = true
     },
     pushTaskData: function () {
       this.inputsIndicatorClear()
