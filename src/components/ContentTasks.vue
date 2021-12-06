@@ -1,16 +1,17 @@
 <template lang="pug">
-div(:class="{addTaskAnimate: addAnimate}")
-  h2.taskName(:class="{listTaskAnimate: slideAnimate}") {{name}} {{setSlideAnimate(slideAnimateIndex)}}
+div(:class="{addTaskAnimate: addAnimate}"
+  :ref="(el) => { if (el) animatedRef[positionIndex] = el}")
+  h2.taskName {{name}}
   .messageSection
     img.messageIcon(:src="image" :alt="alt" :title="title")
-    p.messageText(:class="{listTaskAnimate: slideAnimate}") {{message}}
+    p.messageText {{message}}
     span.messageTime {{time}}
     button.trashButton(title="Delete task" @click="getTaskIndex")
       img(src="../assets/trash.png" alt="Trash")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'ContentTasks',
@@ -22,23 +23,29 @@ export default defineComponent({
     alt: String,
     title: String,
     addAnimate: Boolean,
-    slideAnimateIndex: Number
+    positionIndex: Number
   },
   data () {
     return {
       slideAnimate: false
     }
   },
+  setup (props) {
+    const animatedRef = ref([])
+    onMounted(() => {
+      animatedRef.value.forEach((element: HTMLElement, key) => {
+        setTimeout(() => {
+          if (!props.addAnimate) { element.classList.add('listTaskAnimate') }
+        }, key * 300)
+      })
+    })
+    return {
+      animatedRef
+    }
+  },
   methods: {
     getTaskIndex: function () {
       this.$emit('getTaskIndex')
-    },
-    setSlideAnimate (index: number) {
-      if (!this.addAnimate) {
-        setTimeout(() => {
-          this.slideAnimate = true
-        }, index * 200)
-      }
     }
   }
 })
