@@ -23,19 +23,20 @@ base-content(title="tasks")
     p(v-if="showError") {{errors}}
   div(v-for="(item, i) in items" :key="i")
     hr
-    content-tasks(:name="i + 1 + '. ' + item.name"
+    content-tasks(
+    :name="i + 1 + '. ' + item.name"
     :image="item.photo"
     :message="item.message"
     :time="item.time"
     :alt="item.alt"
     :title="item.alt"
     :addAnimate="i == items.length - 1 && addTaskAnimate ? true : false"
-    :slideAnimateIndex="i"
+    :positionIndex="i"
     @getTaskIndex="taskDelete(i)")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import BaseContent from '../components/BaseContent.vue'
 import ContentTasks from '../components/ContentTasks.vue'
 import ITasks from '../types/tasks.interfaces'
