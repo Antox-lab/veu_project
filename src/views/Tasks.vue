@@ -28,15 +28,15 @@ base-content(title="tasks")
     :image="item.photo"
     :message="item.message"
     :time="item.time"
-    :alt="item.alt"
-    :title="item.alt"
+    :alt="item.status"
+    :title="item.status"
     :addAnimate="i == items.length - 1 && addTaskAnimate ? true : false"
     :positionIndex="i"
     @getTaskIndex="taskDelete(i)")
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent } from 'vue'
 import BaseContent from '../components/BaseContent.vue'
 import ContentTasks from '../components/ContentTasks.vue'
 import ITasks from '../types/tasks.interfaces'
@@ -54,6 +54,18 @@ const addData: IAddData = {
   inputIndicate: false,
   textareaIndicate: false,
   addTaskAnimate: false
+}
+
+enum todosStatus {
+  todo = 'To Do',
+  inprogress = 'In progress',
+  done = 'Done'
+}
+
+enum todosIcons {
+  todo = 'img/todo.png',
+  inprogress = 'img/in_progress.png',
+  done = 'img/done.png'
 }
 
 export default defineComponent({
@@ -77,18 +89,16 @@ export default defineComponent({
     }
   },
   created () {
-    fetch('data/taskData.json')
-      .then((responce) => {
-        return responce.json()
-      })
-      .then((data) => {
-        this.items = data
-      })
+    const data = sessionStorage.getItem('data')
+    if (data) {
+      this.items = JSON.parse(data)
+    }
   },
   methods: {
     taskDelete: function (i: number) {
       this.items.splice(i, 1)
       this.addTaskAnimate = false
+      sessionStorage.setItem('data', JSON.stringify(this.items))
     },
     visibleAddForm: function () {
       this.formShow = !this.formShow
@@ -117,10 +127,11 @@ export default defineComponent({
         this.items.push({
           name: this.title[0].toUpperCase() + this.title.slice(1),
           message: this.description[0].toUpperCase() + this.description.slice(1),
-          photo: 'img/resend.png',
+          photo: todosIcons.todo,
           time: this.date,
-          alt: 'New task'
+          status: todosStatus.todo
         })
+        sessionStorage.setItem('data', JSON.stringify(this.items))
         this.visibleAddForm()
       } else {
         this.showError = true

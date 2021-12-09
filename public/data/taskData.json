@@ -2,36 +2,36 @@
   {
     "name": "Vue introduce",
     "message": "Make a project using vue js.",
-    "photo": "img/check.png",
+    "photo": "img/todo.png",
     "time": "24.10.21",
-    "alt": "Done"
+    "status": "To Do"
   },
   {
     "name": "Components introduce",
     "message": "Create separate components for active content",
-    "photo": "img/check.png",
+    "photo": "img/done.png",
     "time": "25.10.21",
-    "alt": "Done"
+    "status": "Done"
   },
   {
     "name": "Application migration",
     "message": "Save application logic from the previous project",
-    "photo": "img/message.png",
+    "photo": "img/in_progress.png",
     "time": "26.10.21",
-    "alt": "In process"
+    "status": "In progress"
   },
   {
     "name": "Data as array",
     "message": "Load content data from a dataset",
-    "photo": "img/check.png",
+    "photo": "img/in_progress.png",
     "time": "27.10.21",
-    "alt": "Done"
+    "status": "In progress"
   },
   {
     "name": "GitHub push",
     "message": "Create a repository on GitHub",
-    "photo": "img/message.png",
+    "photo": "img/in_progress.png",
     "time": "28.10.21",
-    "alt": "In process"
+    "status": "In progress"
   }
 ]

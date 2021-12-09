@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
       import('../views/Tasks.vue')
   },
   {
-    path: '/Comingkanban',
+    path: '/kanban',
     name: 'Kanban',
     component: () =>
       import('../views/Kanban.vue')
