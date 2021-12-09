@@ -26,6 +26,15 @@ export default defineComponent({
     return {
       notificationCount: dataCount.notificationCount
     }
+  },
+  created () {
+    fetch('data/taskData.json')
+      .then((responce) => {
+        return responce.json()
+      })
+      .then((data) => {
+        sessionStorage.setItem('data', JSON.stringify(data))
+      })
   }
 })
 </script>
