@@ -54,7 +54,7 @@ export default defineComponent({
     }
   },
   methods: {
-    getImageIndex (data: any) {
+    getImageIndex (data: number) {
       this.$emit('sendIndex', data)
     }
   }

@@ -4,10 +4,12 @@ div(:class="{addTaskAnimate: addAnimate}"
   h2.taskName {{name}}
   .messageSection
     img.messageIcon(:src="image" :alt="alt" :title="title")
-    p.messageText {{message}}
+    .messageText {{message}}
     span.messageTime {{time}}
-    button.trashButton(title="Delete task" @click="getTaskIndex")
+    button.taskButton(title="Delete task" @click="getDeleteTaskIndex")
       img(src="../assets/trash.png" alt="Trash")
+    button.taskButton(title="Detailed task" v-if="editable")
+      img(src="../assets/details.png" alt="Details" @click="getDetailsTaskIndex")
 </template>
 
 <script lang="ts">
@@ -23,15 +25,13 @@ export default defineComponent({
     alt: String,
     title: String,
     addAnimate: Boolean,
-    positionIndex: Number
+    positionIndex: Number,
+    editable: Boolean
   },
-  data () {
-    return {
-      slideAnimate: false
-    }
-  },
-  setup (props) {
+  setup (props, { emit }) {
     const animatedRef = ref([])
+    const slideAnimate = ref(false)
+
     onMounted(() => {
       animatedRef.value.forEach((element: HTMLElement, key) => {
         setTimeout(() => {
@@ -39,13 +39,20 @@ export default defineComponent({
         }, key * 300)
       })
     })
-    return {
-      animatedRef
+
+    function getDeleteTaskIndex () {
+      emit('getDeleteTaskIndex')
     }
-  },
-  methods: {
-    getTaskIndex: function () {
-      this.$emit('getTaskIndex')
+
+    function getDetailsTaskIndex () {
+      emit('getDetailsTaskIndex')
+    }
+
+    return {
+      slideAnimate,
+      animatedRef,
+      getDeleteTaskIndex,
+      getDetailsTaskIndex
     }
   }
 })
@@ -66,10 +73,22 @@ $c13: #131313;
   padding: 0 0 0 2rem;
   margin: 0;
   width: 42rem;
+  height: 5.5rem;
   cursor: pointer;
   transition: 0.3s;
+  overflow: hidden;
+  position: relative;
   &:hover {
     color: #808080;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2rem;
+    background: linear-gradient(180deg, transparent, #fff 100%);
   }
 }
 
@@ -87,11 +106,12 @@ $c13: #131313;
   opacity: 0.8;
 }
 
-.trashButton {
+.taskButton {
   background: none;
   border: none;
   cursor: pointer;
   margin-left: 2rem;
+  padding: 0;
   & img {
     opacity: 0.4;
     transition: 0.3s;
