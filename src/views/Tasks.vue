@@ -1,20 +1,25 @@
 <template lang="pug">
 base-content(title="tasks")
   button.addButton(title="Add task" v-if="formShow" @click="formShow = !formShow")
-    img(src="../assets/add.png" alt="Trash")
-  base-modal(v-if="!formShow" title="Edit data" @closeModal="getDataAdd")
-    modal-add(@closeAddModal="getDataAdd")
-  base-modal(v-if="!detailsShow" title="Details data" @closeModal="getDataAdd")
-    task-details-modal(:itemIndex="taskIndex"
-    :photo="items[taskIndex].photo"
-    :name="items[taskIndex].name"
-    :message="items[taskIndex].message"
-    :status="items[taskIndex].status"
-    :time="items[taskIndex].time"
-    @closeEditModal="getDataAdd")
+    img(src="../assets/add.png" alt="Add")
+  modal-add(v-if="!formShow"
+  titleForm="Add data"
+  @closeModal="getDataAdd"
+  @closeAddModal="getDataAdd")
+  task-details-modal(v-if="!detailsShow"
+  titleForm="Details data"
+  :itemIndex="taskIndex"
+  :photo="items[taskIndex].photo"
+  :name="items[taskIndex].name"
+  :message="items[taskIndex].message"
+  :status="items[taskIndex].status"
+  :time="items[taskIndex].time"
+  :editData="editableComponent(items[taskIndex].status)"
+  @closeModal="getDataAdd"
+  @closeEditModal="getDataAdd")
   div(v-for="(item, i) in items" :key="i")
     hr
-    content-tasks(
+    tasks-task(
     :name="i + 1 + '. ' + item.name"
     :image="item.photo"
     :message="item.message"
@@ -23,7 +28,6 @@ base-content(title="tasks")
     :title="item.status"
     :addAnimate="i == items.length - 1 && addTaskAnimate ? true : false"
     :positionIndex="i"
-    :editable="editableComponent(item.status)"
     @getDeleteTaskIndex="taskDelete(i)"
     @getDetailsTaskIndex="taskDetails(i)")
 </template>
@@ -31,10 +35,9 @@ base-content(title="tasks")
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BaseContent from '../components/BaseContent.vue'
-import BaseModal from '../components/BaseModal.vue'
-import ContentTasks from '../components/ContentTasks.vue'
-import ModalAdd from '../components/ModalAdd.vue'
-import TaskDetailsModal from '../components/TaskDetailsModal.vue'
+import TasksTask from '../components/contentTasks/TasksTask.vue'
+import ModalAdd from '../modals/ModalAdd.vue'
+import TaskDetailsModal from '../modals/TaskDetailsModal.vue'
 import ITasks from '../types/tasks.interfaces'
 import IAddData from '../types/tasks.addData'
 import { todosStatus } from '../types/enums'
@@ -48,8 +51,7 @@ export default defineComponent({
   name: 'Tasks',
   components: {
     BaseContent,
-    BaseModal,
-    ContentTasks,
+    TasksTask,
     ModalAdd,
     TaskDetailsModal
   },

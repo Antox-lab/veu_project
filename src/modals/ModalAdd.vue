@@ -1,54 +1,70 @@
 <template lang="pug">
-.formSection
-    label(for="title") Title
-    input.formElement(
-      id="title"
-      placeholder="Enter title"
-      v-model="title"
-      :class="{inputError: inputIndicate}"
-      )
-    label(for="description") Description
-    textarea.formElement.formTextarea(
-      id="description"
-      placeholder="Enter text"
-      v-model="description"
-      :class="{inputError: textareaIndicate}"
-      )
-.formButtonsSection
-  button.formButton.buttonAdd(title="Add task" @click="pushTaskData") Add task
-p(v-if="showError") {{errors}}
+base-modal(:title="titleForm")
+  .formSection
+      label(for="title") Title
+      input.formElement(
+        id="title"
+        placeholder="Enter title"
+        v-model="title"
+        :class="{inputError: inputIndicate}"
+        )
+      label(for="description") Description
+      textarea.formElement.formTextarea(
+        id="description"
+        placeholder="Enter text"
+        v-model="description"
+        :class="{inputError: textareaIndicate}"
+        )
+      label(for="dateItem") Completed date
+      input.formElement(
+        type="date"
+        id="dateItem"
+        v-model="completedDate"
+        :class="{inputError: dataIndicate}")
+  .formButtonsSection
+    button.formButton.buttonAdd(title="Add task" @click="pushTaskData") Add task
+  p(v-if="showError") {{errors}}
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import BaseModal from '../modals/BaseModal.vue'
 import ITasks from '../types/tasks.interfaces'
 import IModalAdd from '../types/modalAdd.interface'
 import { todosStatus, todosIcons } from '../types/enums'
 
 const dataModalAdd: IModalAdd = {
-  data: '',
+  completedDate: '',
   title: '',
   description: '',
   showError: false,
   errors: '',
   inputIndicate: false,
   textareaIndicate: false,
+  dataIndicate: false,
   formShow: false,
   addTaskAnimate: false
 }
 
 export default defineComponent({
   name: 'ModalAdd',
+  components: {
+    BaseModal
+  },
+  props: {
+    titleForm: String
+  },
   emits: ['closeAddModal'],
   setup (props, { emit }) {
     const inputIndicate = ref(dataModalAdd.inputIndicate)
     const textareaIndicate = ref(dataModalAdd.textareaIndicate)
+    const dataIndicate = ref(dataModalAdd.dataIndicate)
     const errors = ref(dataModalAdd.errors)
     const showError = ref(dataModalAdd.showError)
-    const data = ref(dataModalAdd.data)
     const addTaskAnimate = ref(dataModalAdd.addTaskAnimate)
     const title = ref(dataModalAdd.title)
     const description = ref(dataModalAdd.description)
+    const completedDate = ref(dataModalAdd.completedDate)
     const formShow = ref(dataModalAdd.formShow)
     const items = ref([] as ITasks[])
 
@@ -57,24 +73,23 @@ export default defineComponent({
       items.value = JSON.parse(loadData)
     }
 
-    function setNowData () {
-      const date = new Date()
-      const dd = date.getDate()
-      const mm = date.getMonth() + 1
-      const yy = date.getFullYear() % 100
-      data.value = `${dd}.${mm}.${yy}`
+    function setParseData () {
+      const dd = completedDate.value.slice(8)
+      const mm = completedDate.value.slice(5, 7)
+      const yy = completedDate.value.slice(2, 4)
+      completedDate.value = `${dd}.${mm}.${yy}`
       addTaskAnimate.value = true
     }
 
     function pushTaskData () {
       inputsIndicatorClear()
       if (isFormValidate(title.value, description.value)) {
-        setNowData()
+        setParseData()
         items.value.push({
           name: title.value[0].toUpperCase() + title.value.slice(1),
           message: description.value[0].toUpperCase() + description.value.slice(1),
           photo: todosIcons.todo,
-          time: data.value,
+          time: completedDate.value,
           status: todosStatus.todo
         })
         sessionStorage.setItem('data', JSON.stringify(items.value))
@@ -110,6 +125,11 @@ export default defineComponent({
         textareaIndicate.value = true
         return false
       }
+      if (completedDate.value === '') {
+        errors.value = 'Forms input "Completed date" must not be empty!'
+        dataIndicate.value = true
+        return false
+      }
       if (title.length < 10 || title.length > 40) {
         errors.value = 'The size of the "Title" field should not be more than 40 and less than 10 characters'
         inputIndicate.value = true
@@ -132,10 +152,11 @@ export default defineComponent({
     return {
       inputIndicate,
       textareaIndicate,
+      dataIndicate,
       errors,
       showError,
-      setNowData,
-      data,
+      setParseData,
+      completedDate,
       title,
       description,
       pushTaskData,

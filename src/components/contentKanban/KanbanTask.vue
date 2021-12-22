@@ -1,6 +1,8 @@
 <template lang="pug">
 transition(name="carnival")
-  .cardSection(v-if="showAnimate")
+  .cardSection(v-if="showAnimate"
+    :class="{owerTimeAlert: overTime}")
+    .oneDaIindicate(v-if="oneDayTime") !
     img(:src="photo" :alt="status" :title="status")
     .infoSection
       h2(:title="title") {{name}}
@@ -8,22 +10,24 @@ transition(name="carnival")
         div
           span Completed date:!{' '}
           span.dateFormat {{date}}
-        button(title="Details" v-if="editable")
-          img(src="../assets/details_small.png" alt="Details" @click="getDetailsTaskIndex")
+        button(title="Details")
+          img(src="img/details_small.png" alt="Details" @click="getDetailsTaskIndex")
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, PropType, ref, onMounted } from 'vue'
+import { todosStatus, todosIcons } from '../../types/enums'
 
 export default defineComponent({
-  name: 'ContentKanban',
+  name: 'KanbanTask',
   props: {
     name: String,
     title: String,
-    photo: String,
+    photo: String as PropType<todosIcons>,
     date: String,
-    status: String,
-    editable: Boolean
+    status: String as PropType<todosStatus>,
+    overTime: Boolean,
+    oneDayTime: Boolean
   },
   setup (props, { emit }) {
     const showAnimate = ref(false)
@@ -58,9 +62,10 @@ h2 {
 }
 
 .cardSection {
+    position: relative;
     margin: 1rem 0 0 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     background-color: #ccc;
     border-radius: 0.7rem;
@@ -77,8 +82,8 @@ h2 {
   justify-content: space-between;
   align-items: center;
     & button {
-      width: 2.2rem;
-      height: 2.2rem;
+      width: 1.6rem;
+      height: 1.6rem;
       border: none;
       border-radius: 0.8rem;
       cursor: pointer;
@@ -93,6 +98,25 @@ h2 {
             }
         }
     }
+}
+
+.oneDaIindicate {
+  display: flex;
+  position: absolute;
+  width: 1.3rem;
+  height: 1.3rem;
+  left: 0.5rem;
+  top: 0.5rem;
+  border-radius: 1rem;
+  background-color: orange;
+  color: white;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.owerTimeAlert {
+  background-color: #faa;
 }
 
 .infoSection {

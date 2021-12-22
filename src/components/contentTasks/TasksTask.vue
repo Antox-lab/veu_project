@@ -7,16 +7,16 @@ div(:class="{addTaskAnimate: addAnimate}"
     .messageText {{message}}
     span.messageTime {{time}}
     button.taskButton(title="Delete task" @click="getDeleteTaskIndex")
-      img(src="../assets/trash.png" alt="Trash")
-    button.taskButton(title="Detailed task" v-if="editable")
-      img(src="../assets/details.png" alt="Details" @click="getDetailsTaskIndex")
+      img(src="img/trash.png" alt="Trash")
+    button.taskButton(title="Detailed task")
+      img(src="img/details.png" alt="Details" @click="getDetailsTaskIndex")
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 
 export default defineComponent({
-  name: 'ContentTasks',
+  name: 'TasksTask',
   props: {
     name: String,
     image: String,
@@ -25,8 +25,7 @@ export default defineComponent({
     alt: String,
     title: String,
     addAnimate: Boolean,
-    positionIndex: Number,
-    editable: Boolean
+    positionIndex: Number
   },
   setup (props, { emit }) {
     const animatedRef = ref([])
