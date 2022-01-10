@@ -23,17 +23,21 @@ import IContentActivity from '../types/contentactivity.interfaces'
 
 export default defineComponent({
   name: 'ContentActivity',
-  methods: {
-    getImageIndex: function (activity: IContentActivity) {
-      this.$emit('sendImageIndex', activity.value)
-    }
-  },
   props: {
     image: String,
     message: String,
     outpost: String,
     time: String,
     images: Array
+  },
+  setup (props, { emit }) {
+    function getImageIndex (activity: IContentActivity) {
+      emit('sendImageIndex', activity.value)
+    }
+
+    return {
+      getImageIndex
+    }
   }
 })
 </script>

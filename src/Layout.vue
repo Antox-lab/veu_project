@@ -1,13 +1,15 @@
 <template lang="pug">
 #main
-  the-sidebar(:notificationCount="notificationCount")
+  button.sidebarButton(@click="sidebarShow = !sidebarShow") {{sidebarButtonCaption}}
+  the-sidebar(:notificationCount="notificationCount"
+  :class="{sidebarShow: sidebarShow}")
   .contentBar
     the-header
     router-view(@sendIndex="notificationCount = $event")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import TheSidebar from './components/TheSidebar.vue'
 import TheHeader from './components/TheHeader.vue'
 import { INotification } from './types/layout.interfaces'
@@ -22,12 +24,11 @@ export default defineComponent({
     TheSidebar,
     TheHeader
   },
-  data () {
-    return {
-      notificationCount: dataCount.notificationCount
-    }
-  },
-  created () {
+  setup () {
+    const notificationCount = ref(dataCount.notificationCount)
+    const sidebarShow = ref(true)
+    const sidebarButtonCaption = ref('▼')
+
     fetch('data/taskData.json')
       .then((responce) => {
         return responce.json()
@@ -35,6 +36,16 @@ export default defineComponent({
       .then((data) => {
         sessionStorage.setItem('data', JSON.stringify(data))
       })
+
+    watch(() => sidebarShow.value, () => {
+      sidebarShow.value ? sidebarButtonCaption.value = '▼' : sidebarButtonCaption.value = '▲'
+    })
+
+    return {
+      notificationCount,
+      sidebarShow,
+      sidebarButtonCaption
+    }
   }
 })
 </script>
@@ -42,6 +53,7 @@ export default defineComponent({
 <style lang="scss">
 $black: #000;
 $white: #fff;
+$eee: #eeebe5;
 
 @mixin flexible() {
   display: flex;
@@ -118,7 +130,7 @@ body {
 }
 
 .contentBar {
-  background-color: #eeebe5;
+  background-color: $eee;
   @include WH(100%, 100%);
 }
 
@@ -145,6 +157,20 @@ body {
 
 .pointerCursor {
   cursor: pointer;
+}
+
+.sidebarButton {
+  margin: 0;
+  padding: 0.2rem;
+  width: 100%;
+  display: none;
+  border: none;
+  background-color: $eee;
+  color: gray;
+  transition: 0.3s;
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .toolBar {
@@ -205,16 +231,26 @@ body {
   visibility: hidden;
 }
 
+.sidebarShow {
+  display: block;
+}
+
 //Responsive
 @media screen and (max-width: 992px) {
   #main {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: center;
     width: 100%;
   }
   .contentBar {
     width: 100%;
   }
+  .sidebarButton {
+    display: inline-block;
+  }
+  .sidebarShow {
+    display: none;
+}
 }
 
 @media screen and (max-width: 768px) {

@@ -1,10 +1,16 @@
 <template lang="pug">
 base-content(title="kanban")
-  button.findButton(title="Find task" v-if="formShow" @click="formShow = !formShow")
-    img(src="img/find.png" alt="Find")
+  .buttonsSection
+    button.findButton(title="Find task" v-if="formShow" @click="formShow = !formShow")
+      img(src="img/find.png" alt="Find")
+    button.findButton(title="Clear find" v-if="clearButtonShow" @click="getDataAdd")
+      img(src="img/clear_find.png" alt="Find")
+    p.resultCaption(v-if="clearButtonShow") Find {{findText}} for:
+    span.resultValue(v-if="clearButtonShow") {{findResult}}
   modal-find(v-if="!formShow"
   titleForm="Find data"
-  @closeModal="getDataAdd")
+  @closeModal="getCloseFindWindow"
+  @findTasksParams="fromFind($event)")
   task-details-modal(v-if="!detailsShow"
   titleForm="Details data"
   :itemIndex="taskIndex"
@@ -40,7 +46,6 @@ base-content(title="kanban")
       :key="'col1'+i")
         kanban-task(
         draggable="true"
-        :photo="item.photo"
         :name="item.name"
         :title="item.name"
         :status="item.status"
@@ -58,7 +63,6 @@ base-content(title="kanban")
       :key="'col2'+i")
         kanban-task(
         draggable="true"
-        :photo="item.photo"
         :name="item.name"
         :title="item.name"
         :status="item.status"
@@ -75,7 +79,6 @@ base-content(title="kanban")
       div(v-for="(item, i) in itemsDone"
       :key="'col3'+i")
         kanban-task(
-        :photo="item.photo"
         :name="item.name"
         :title="item.name"
         :status="item.status"
@@ -94,6 +97,7 @@ import TaskDetailsModal from '../modals/TaskDetailsModal.vue'
 import ModalFind from '../modals/ModalFind.vue'
 import ITasks from '../types/tasks.interfaces'
 import { todosStatus, todosIcons } from '../types/enums'
+import { useDetails, useEditable } from '../components/use/methodsUseCards'
 
 export default defineComponent({
   name: 'Kanban',
@@ -108,9 +112,16 @@ export default defineComponent({
     const itemsToDo = ref([] as ITasks[])
     const itemsInProgress = ref([] as ITasks[])
     const itemsDone = ref([] as ITasks[])
+    const newItemsToDo = ref([] as ITasks[])
+    const newItemsInProgress = ref([] as ITasks[])
+    const newItemsDone = ref([] as ITasks[])
     const formShow = ref(true)
-    const detailsShow = ref(true)
-    const taskIndex = ref(0)
+    const clearButtonShow = ref(false)
+    const findText = ref('')
+    const findResult = ref('')
+
+    const { detailsShow, taskIndex, taskDetails } = useDetails(true)
+    const { editableComponent } = useEditable()
 
     const countToDo = computed(() => {
       return itemsToDo.value.length
@@ -128,36 +139,28 @@ export default defineComponent({
       const data = sessionStorage.getItem('data')
       if (data) {
         items.value = JSON.parse(data)
-        itemsToDo.value = getFilteredArray(data, todosStatus.todo)
-        itemsInProgress.value = getFilteredArray(data, todosStatus.inprogress)
-        itemsDone.value = getFilteredArray(data, todosStatus.done)
+        itemsToDo.value = getFilteredArray(todosStatus.todo)
+        itemsInProgress.value = getFilteredArray(todosStatus.inprogress)
+        itemsDone.value = getFilteredArray(todosStatus.done)
+        clearButtonShow.value = false
       }
     }
 
-    function getFilteredArray (data: string, status: todosStatus) {
-      return JSON.parse(data).filter((element: any, key: number) => {
+    function getFilteredArray (status: todosStatus) {
+      return items.value.filter((element: any, key: number) => {
         element.listIndex = key
         return element.status === status
       })
     }
 
-    function taskDetails (i: number) {
-      detailsShow.value = false
-      taskIndex.value = i
+    function getDataAdd () {
+      createListsData()
+      getCloseFindWindow()
     }
 
-    function getDataAdd () {
-      const data = sessionStorage.getItem('data')
-      if (data) {
-        items.value = JSON.parse(data)
-      }
-      createListsData()
+    function getCloseFindWindow () {
       formShow.value = true
       detailsShow.value = true
-    }
-
-    function editableComponent (status: string) {
-      return status !== todosStatus.done
     }
 
     function onDrag (e: DragEvent, value: string) {
@@ -199,10 +202,7 @@ export default defineComponent({
     }
 
     function checkItems (items: ITasks[]) {
-      if (items.length) {
-        return false
-      }
-      return true
+      return !items.length
     }
 
     function parseDataNow (value: string) {
@@ -215,17 +215,58 @@ export default defineComponent({
     }
 
     function isOverTime (value: string) {
-      if (parseDataNow(value) < 0) {
-        return true
-      }
-      return false
+      return parseDataNow(value) < 0
     }
 
     function isOneDayTime (value: string) {
-      if (parseDataNow(value) === 1) {
-        return true
+      return parseDataNow(value) === 1
+    }
+
+    function parseDateValueToInt (value: string) {
+      return parseInt(value.replace(/[^0-9]/g, ''))
+    }
+
+    function parseDateForItem (value: string) {
+      const day = value.slice(0, 2)
+      const month = value.slice(3, 5)
+      const year = value.slice(6)
+      return parseInt('20' + year + month + day)
+    }
+
+    function fromFind (findValue: string) {
+      clearButtonShow.value = true
+      if (findValue.length === 1) {
+        findText.value = 'title'
+        findResult.value = findValue[0]
+        newItemsToDo.value = itemsToDo.value.filter((item) => {
+          return item.name.includes(findValue[0])
+        })
+        newItemsInProgress.value = itemsInProgress.value.filter((item) => {
+          return item.name.includes(findValue[0])
+        })
+        newItemsDone.value = itemsDone.value.filter((item) => {
+          return item.name.includes(findValue[0])
+        })
+      } else {
+        findText.value = 'date'
+        findResult.value = 'from ' + findValue[0] + ' to ' + findValue[1]
+        newItemsToDo.value = itemsToDo.value.filter((item) => {
+          return parseDateForItem(item.time) >= parseDateValueToInt(findValue[0]) &&
+          parseDateForItem(item.time) <= parseDateValueToInt(findValue[1])
+        })
+        newItemsInProgress.value = itemsInProgress.value.filter((item) => {
+          return parseDateForItem(item.time) >= parseDateValueToInt(findValue[0]) &&
+          parseDateForItem(item.time) <= parseDateValueToInt(findValue[1])
+        })
+        newItemsDone.value = itemsDone.value.filter((item) => {
+          return parseDateForItem(item.time) >= parseDateValueToInt(findValue[0]) &&
+          parseDateForItem(item.time) <= parseDateValueToInt(findValue[1])
+        })
       }
-      return false
+      itemsToDo.value = newItemsToDo.value
+      itemsInProgress.value = newItemsInProgress.value
+      itemsDone.value = newItemsDone.value
+      getCloseFindWindow()
     }
 
     return {
@@ -233,12 +274,17 @@ export default defineComponent({
       itemsToDo,
       itemsInProgress,
       itemsDone,
+      newItemsToDo,
+      newItemsInProgress,
+      newItemsDone,
       formShow,
+      clearButtonShow,
       detailsShow,
       taskIndex,
       getFilteredArray,
       taskDetails,
       getDataAdd,
+      getCloseFindWindow,
       editableComponent,
       onDrag,
       onDropToDo,
@@ -250,7 +296,10 @@ export default defineComponent({
       isOneDayTime,
       countToDo,
       countInProgress,
-      countDone
+      countDone,
+      fromFind,
+      findText,
+      findResult
     }
   }
 })
@@ -258,10 +307,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 $c87: #878787;
+$c9: #1c9acc;
 
 @mixin contextDisplay () {
   display: flex;
   justify-content: center;
+}
+
+.buttonsSection {
+  display: flex;
+  align-items: center;
+  margin: 0 0 2rem 2rem;
 }
 
 .dropCaption {
@@ -273,7 +329,6 @@ $c87: #878787;
   background: none;
   border: none;
   cursor: pointer;
-  margin: 0 0 2rem 2rem;
   & img {
     opacity: 0.4;
     transition: 0.3s;
@@ -330,9 +385,22 @@ $c87: #878787;
 
 .headCaptionCount {
   font-size: 1.2rem;
-  color: #1c9acc;
+  color: $c9;
   margin: 0 0 0.4rem;
   font-style: italic;
+}
+
+.resultCaption {
+  font-size: 1.4rem;
+  margin-left: 1rem;
+  font-style: italic;
+}
+
+.resultValue {
+  font-size: 1.4rem;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  color: $c9;
 }
 
 hr {

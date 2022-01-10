@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import SidebarActiveUser from './SidebarActiveUser.vue'
 import SidebarTasksStatus from './SidebarTasksStatus.vue'
 import { ILayout } from '../types/layout.interfaces'
@@ -35,15 +35,17 @@ export default defineComponent({
     SidebarActiveUser,
     SidebarTasksStatus
   },
-  data () {
-    return {
-      items: dataApp
-    }
-  },
   props: {
     notificationCount: {
       type: Number,
       default: 0
+    }
+  },
+  setup () {
+    const items = ref(dataApp)
+
+    return {
+      items
     }
   }
 })

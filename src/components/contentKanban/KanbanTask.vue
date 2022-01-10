@@ -2,20 +2,19 @@
 transition(name="carnival")
   .cardSection(v-if="showAnimate"
     :class="{owerTimeAlert: overTime}")
-    .oneDaIindicate(v-if="oneDayTime") !
-    img(:src="photo" :alt="status" :title="status")
+    h2(:title="title") {{name}}
     .infoSection
-      h2(:title="title") {{name}}
+      .oneDayIindicate(v-if="oneDayTime") !
+      img(:src="getImage" :alt="status" :title="status")
       .dateSection
-        div
-          span Completed date:!{' '}
-          span.dateFormat {{date}}
+        span Completed date:!{' '}
+        span.dateFormat {{completedDate}}
         button(title="Details")
           img(src="img/details_small.png" alt="Details" @click="getDetailsTaskIndex")
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, onMounted } from 'vue'
+import { defineComponent, PropType, ref, onMounted, computed } from 'vue'
 import { todosStatus, todosIcons } from '../../types/enums'
 
 export default defineComponent({
@@ -23,7 +22,6 @@ export default defineComponent({
   props: {
     name: String,
     title: String,
-    photo: String as PropType<todosIcons>,
     date: String,
     status: String as PropType<todosStatus>,
     overTime: Boolean,
@@ -31,6 +29,20 @@ export default defineComponent({
   },
   setup (props, { emit }) {
     const showAnimate = ref(false)
+
+    const completedDate = computed(() => {
+      return props.date
+    })
+
+    const getImage = computed(() => {
+      if (props.status === todosStatus.todo) {
+        return todosIcons.todo
+      } else if (props.status === todosStatus.inprogress) {
+        return todosIcons.inprogress
+      } else {
+        return todosIcons.done
+      }
+    })
 
     onMounted(() => {
       showAnimate.value = true
@@ -42,6 +54,8 @@ export default defineComponent({
 
     return {
       showAnimate,
+      completedDate,
+      getImage,
       getDetailsTaskIndex
     }
   }
@@ -55,10 +69,11 @@ img {
 }
 
 h2 {
-  margin-bottom: 1rem;
+  margin: 0.1rem 0;
+  width: 90%;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .cardSection {
@@ -66,8 +81,9 @@ h2 {
     margin: 1rem 0 0 0;
     display: flex;
     justify-content: flex-start;
+    flex-direction: column;
     align-items: center;
-    background-color: #ccc;
+    background-color: #ddd;
     border-radius: 0.7rem;
     width: 100%;
 }
@@ -81,6 +97,8 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 0 0.2rem;
     & button {
       width: 1.6rem;
       height: 1.6rem;
@@ -100,13 +118,13 @@ h2 {
     }
 }
 
-.oneDaIindicate {
+.oneDayIindicate {
   display: flex;
   position: absolute;
   width: 1.3rem;
   height: 1.3rem;
-  left: 0.5rem;
-  top: 0.5rem;
+  left: 0.6rem;
+  top: 2.5rem;
   border-radius: 1rem;
   background-color: orange;
   color: white;
@@ -116,15 +134,16 @@ h2 {
 }
 
 .owerTimeAlert {
-  background-color: #faa;
+  background-color: #ff6666;
 }
 
 .infoSection {
+  display: flex;
+  flex-direction: row;
   margin: 0.5rem;
-  padding: 0.5rem;
   background-color: #eee;
   border-radius: 0.5rem;
-  width: 65%;
+  width: 95%;
 }
 
 @keyframes carnivalFrame {
@@ -139,6 +158,18 @@ h2 {
 
 .carnival-enter-from {
   animation-name: carnivalFrame;
+}
+
+//Responsive
+@media screen and (max-width: 768px) {
+  .dateSection {
+    flex-direction: column;
+  }
+
+  .infoSection {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 </style>

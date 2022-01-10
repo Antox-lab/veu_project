@@ -33,14 +33,13 @@ base-content(title="tasks")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import BaseContent from '../components/BaseContent.vue'
 import TasksTask from '../components/contentTasks/TasksTask.vue'
 import ModalAdd from '../modals/ModalAdd.vue'
 import TaskDetailsModal from '../modals/TaskDetailsModal.vue'
-import ITasks from '../types/tasks.interfaces'
 import IAddData from '../types/tasks.addData'
-import { todosStatus } from '../types/enums'
+import { useDetails, useEditable, useLoadData } from '../components/use/methodsUseCards'
 
 const addData: IAddData = {
   formShow: true,
@@ -55,44 +54,39 @@ export default defineComponent({
     ModalAdd,
     TaskDetailsModal
   },
-  data () {
-    return {
-      items: [] as ITasks[],
-      formShow: addData.formShow,
-      detailsShow: addData.formShow,
-      addTaskAnimate: addData.addTaskAnimate,
-      taskIndex: 0
+  setup () {
+    const formShow = ref(addData.formShow)
+    const addTaskAnimate = ref(addData.addTaskAnimate)
+
+    const { detailsShow, taskIndex, taskDetails } = useDetails(addData.formShow)
+    const { editableComponent } = useEditable()
+    const { items } = useLoadData()
+
+    function taskDelete (i: number) {
+      items.value.splice(i, 1)
+      addTaskAnimate.value = false
+      sessionStorage.setItem('data', JSON.stringify(items.value))
     }
-  },
-  created () {
-    const data = sessionStorage.getItem('data')
-    if (data) {
-      this.items = JSON.parse(data)
-    }
-  },
-  methods: {
-    taskDelete: function (i: number) {
-      this.items.splice(i, 1)
-      this.addTaskAnimate = false
-      sessionStorage.setItem('data', JSON.stringify(this.items))
-    },
-    taskDetails: function (i: number) {
-      this.detailsShow = false
-      this.taskIndex = i
-    },
-    getDataAdd: function () {
+
+    function getDataAdd () {
       const data = sessionStorage.getItem('data')
       if (data) {
-        this.items = JSON.parse(data)
+        items.value = JSON.parse(data)
       }
-      this.formShow = true
-      this.detailsShow = true
-    },
-    editableComponent: function (status: string) {
-      if (status === todosStatus.done) {
-        return false
-      }
-      return true
+      formShow.value = true
+      detailsShow.value = true
+    }
+
+    return {
+      items,
+      formShow,
+      detailsShow,
+      addTaskAnimate,
+      taskIndex,
+      taskDelete,
+      taskDetails,
+      getDataAdd,
+      editableComponent
     }
   }
 })

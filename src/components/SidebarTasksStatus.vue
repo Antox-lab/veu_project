@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import ISidebarTaskStatus from '../types/sidebartasksstatus.interfaces'
 
 const dataTasks: ISidebarTaskStatus = {
@@ -19,24 +20,32 @@ const dataTasks: ISidebarTaskStatus = {
 
 export default defineComponent({
   name: 'SidebarTasksStatus',
-  data () {
-    return {
-      comlitedTasks: dataTasks.comlitedTasks,
-      openTasks: dataTasks.openTasks
+  setup () {
+    const comlitedTasks = ref(dataTasks.comlitedTasks)
+    const openTasks = ref(dataTasks.openTasks)
+    const router = useRouter()
+
+    function setTasks () {
+      openTasks.value > 0 ? isAboveZero() : alert('Sorry, there are no open tasks!')
     }
-  },
-  methods: {
-    setTasks: function () {
-      this.openTasks > 0 ? this.isAboveZero() : alert('Sorry, there are no open tasks!')
-    },
-    goToTasks: function () {
-      this.openTasks > 0 ? this.$router.push('/Tasks') : alert('Sorry, there are no open tasks!')
-    },
-    isAboveZero: function () {
+
+    function goToTasks () {
+      openTasks.value > 0 ? router.push('/Tasks') : alert('Sorry, there are no open tasks!')
+    }
+
+    function isAboveZero () {
       if (confirm('Are you sure you want to change the number of tasks?')) {
-        this.comlitedTasks += 1
-        this.openTasks -= 1
+        comlitedTasks.value += 1
+        openTasks.value -= 1
       }
+    }
+
+    return {
+      comlitedTasks,
+      openTasks,
+      setTasks,
+      goToTasks,
+      isAboveZero
     }
   }
 })
