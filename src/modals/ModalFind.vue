@@ -2,29 +2,26 @@
 base-modal(:title="titleForm")
   div
     .inputSection
-      input.formElement(type="radio" checked id="noValue" value="No selected" v-model="result")
-      label(for="noValue") No selected
-    .inputSection
-      input.formElement(type="radio" id="textValue" value="text" v-model="result")
-      label(for="textValue") Text
+      input.formElement(type="radio" checked id="textValue" value="text" v-model="result")
+      label(for="textValue") Title
     .inputSection
       input.formElement(type="radio" id="dateValue" value="date" v-model="result")
-      label(for="dateValue") Date
+      label(for="dateValue") Completed date
   hr
   .formSection
-    label {{resultCaption}} {{result}}
+    label Find elements by {{result}}
     .inputFindSection(v-if="isFindText")
-      input.formElementText(type="text")
-    .inputFindSection(v-if="isFindDate")
+      input.formElementText(type="text" v-model="textValue")
+    .inputFindSection(v-if="!isFindText")
       div
         label From:
-        input.formElementDate(type="date")
+        input.formElementDate(type="date" v-model="dateFromValue" :max="dateToValue")
       div
         label To:
-        input.formElementDate(type="date")
+        input.formElementDate(type="date" v-model="dateToValue" :min="dateFromValue")
   hr
   .formButtonsSection
-    button.formButton(title="Add task" v-if="buttonVisibled") Find task
+    button.formButton(title="Add task" @click="sendFindValues") Find task
 </template>
 
 <script lang="ts">
@@ -36,48 +33,48 @@ export default defineComponent({
   components: {
     BaseModal
   },
+  emits: ['findTasksParams'],
   props: {
     titleForm: String
   },
-  setup () {
-    const result = ref('No selected')
-    const resultCaption = ref('')
-    const isFindText = ref(false)
-    const isFindDate = ref(false)
-    const buttonVisibled = ref(false)
+  setup (props, { emit }) {
+    const result = ref('text')
+    const isFindText = ref(true)
+    const textValue = ref('')
+    const dateFromValue = ref('')
+    const dateToValue = ref('')
 
     watch(() => result.value, () => {
       switch (result.value) {
         case 'text': {
           isFindText.value = true
-          isFindDate.value = false
-          buttonVisibled.value = true
-          resultCaption.value = 'Finde elements by '
           break
         }
         case 'date': {
           isFindText.value = false
-          isFindDate.value = true
-          buttonVisibled.value = true
-          resultCaption.value = 'Finde elements by '
           break
         }
         default: {
-          isFindText.value = false
-          isFindDate.value = false
-          buttonVisibled.value = false
-          resultCaption.value = ''
           break
         }
       }
     })
 
+    function sendFindValues () {
+      if (isFindText.value) {
+        emit('findTasksParams', [textValue.value])
+      } else {
+        emit('findTasksParams', [dateFromValue.value, dateToValue.value])
+      }
+    }
+
     return {
       result,
+      textValue,
+      dateFromValue,
+      dateToValue,
       isFindText,
-      isFindDate,
-      resultCaption,
-      buttonVisibled
+      sendFindValues
     }
   }
 })

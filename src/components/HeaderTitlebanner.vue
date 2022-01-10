@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import IHeaderTitlebanner from '../types/headertitlebanner.interfaces'
 
 const titleBannerItems: IHeaderTitlebanner[] = [
@@ -25,9 +25,11 @@ const titleBannerItems: IHeaderTitlebanner[] = [
 
 export default defineComponent({
   name: 'HeaderTitlebanner',
-  data () {
+  setup () {
+    const items = ref(titleBannerItems)
+
     return {
-      items: titleBannerItems
+      items
     }
   }
 })

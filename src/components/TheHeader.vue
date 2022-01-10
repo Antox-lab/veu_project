@@ -113,4 +113,10 @@ header {
     height: 15rem;
   }
 }
+
+@media screen and (max-width: 576px) {
+header {
+    height: 20rem;
+  }
+}
 </style>

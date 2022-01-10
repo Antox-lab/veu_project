@@ -10,17 +10,17 @@ base-modal(:title="titleForm")
           option(v-for="item in options" :value="item.value") {{item.text}}
   hr
   .formSection
-    span Completed Date:
-    p(v-if="!formEdit") {{time}}
+    span Completed date:
+    p(v-if="!formEdit") {{completedDate}}
     input.formElement(v-else type="date"
     v-model="dateModel"
     @input="formInput"
     :min="minDate"
     required)
-    span Name:
+    span Title:
     p(v-if="!formEdit") {{name}}
     input.formElement(v-else v-model="nameModel" @input="formInput")
-    span Message:
+    span Description:
     p(v-if="!formEdit") {{message}}
     textarea.formElement(v-else v-model="messageModel" @input="formInput")
   hr
@@ -30,10 +30,10 @@ base-modal(:title="titleForm")
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, PropType, ref, watch, computed } from 'vue'
 import { todosStatus, todosIcons } from '../types/enums'
-import BaseModal from '../modals/BaseModal.vue'
-import ITasks from '../types/tasks.interfaces'
+import BaseModal from './BaseModal.vue'
+import { useLoadData } from '../components/use/methodsUseCards'
 
 export default defineComponent({
   name: 'TaskDetailsModal',
@@ -55,7 +55,6 @@ export default defineComponent({
     const buttonCaption = ref('Edit')
     const formEdit = ref(false)
     const visibleSaveButton = ref(false)
-    const items = ref([] as ITasks[])
     const nameModel = ref(props.name)
     const messageModel = ref(props.message)
     const statusModel = ref(props.status)
@@ -67,6 +66,12 @@ export default defineComponent({
     ])
     const minDate = ref(getDateNow())
     const setPhoto = ref(props.photo)
+
+    const { items } = useLoadData()
+
+    const completedDate = computed(() => {
+      return props.time
+    })
 
     watch(() => statusModel.value, () => {
       switch (statusModel.value) {
@@ -86,11 +91,6 @@ export default defineComponent({
       }
     })
 
-    const loadData = sessionStorage.getItem('data')
-    if (loadData) {
-      items.value = JSON.parse(loadData)
-    }
-
     function setCancel () {
       formEdit.value = !formEdit.value
       if (formEdit.value) {
@@ -101,9 +101,11 @@ export default defineComponent({
     }
 
     function editDataTask (index: number) {
-      items.value[index].name = nameModel.value as string
-      items.value[index].message = messageModel.value as string
-      items.value[index].time = setDateValue(dateModel.value) as string
+      const newItem = items.value[index]
+      newItem.name = nameModel.value as string
+      newItem.message = messageModel.value as string
+      newItem.time = setDateValue(dateModel.value) as string
+      items.value[index] = newItem
       switch (statusModel.value) {
         case todosStatus.todo: {
           items.value[index].status = todosStatus.todo
@@ -173,7 +175,8 @@ export default defineComponent({
       setDateValue,
       options,
       minDate,
-      setPhoto
+      setPhoto,
+      completedDate
     }
   }
 })

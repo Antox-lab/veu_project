@@ -10,7 +10,7 @@ base-content(title="activity")
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import BaseContent from '../components/BaseContent.vue'
 import ContentActivity from '../components/ContentActivity.vue'
 import IActivity from '../types/activity.interfaces'
@@ -48,14 +48,16 @@ export default defineComponent({
     BaseContent,
     ContentActivity
   },
-  data () {
-    return {
-      items: dataActivity
+  setup (props, { emit }) {
+    const items = ref(dataActivity)
+
+    function getImageIndex (data: number) {
+      emit('sendIndex', data)
     }
-  },
-  methods: {
-    getImageIndex (data: number) {
-      this.$emit('sendIndex', data)
+
+    return {
+      items,
+      getImageIndex
     }
   }
 })

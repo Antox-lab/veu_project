@@ -28,10 +28,10 @@ base-modal(:title="titleForm")
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import BaseModal from '../modals/BaseModal.vue'
-import ITasks from '../types/tasks.interfaces'
+import BaseModal from './BaseModal.vue'
 import IModalAdd from '../types/modalAdd.interface'
 import { todosStatus, todosIcons } from '../types/enums'
+import { useLoadData } from '../components/use/methodsUseCards'
 
 const dataModalAdd: IModalAdd = {
   completedDate: '',
@@ -66,12 +66,8 @@ export default defineComponent({
     const description = ref(dataModalAdd.description)
     const completedDate = ref(dataModalAdd.completedDate)
     const formShow = ref(dataModalAdd.formShow)
-    const items = ref([] as ITasks[])
 
-    const loadData = sessionStorage.getItem('data')
-    if (loadData) {
-      items.value = JSON.parse(loadData)
-    }
+    const { items } = useLoadData()
 
     function setParseData () {
       const dd = completedDate.value.slice(8)

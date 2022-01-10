@@ -5,7 +5,7 @@ div(:class="{addTaskAnimate: addAnimate}"
   .messageSection
     img.messageIcon(:src="image" :alt="alt" :title="title")
     .messageText {{message}}
-    span.messageTime {{time}}
+    span.messageTime {{completedDate}}
     button.taskButton(title="Delete task" @click="getDeleteTaskIndex")
       img(src="img/trash.png" alt="Trash")
     button.taskButton(title="Detailed task")
@@ -13,7 +13,7 @@ div(:class="{addTaskAnimate: addAnimate}"
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 
 export default defineComponent({
   name: 'TasksTask',
@@ -30,6 +30,10 @@ export default defineComponent({
   setup (props, { emit }) {
     const animatedRef = ref([])
     const slideAnimate = ref(false)
+
+    const completedDate = computed(() => {
+      return props.time
+    })
 
     onMounted(() => {
       animatedRef.value.forEach((element: HTMLElement, key) => {
@@ -50,6 +54,7 @@ export default defineComponent({
     return {
       slideAnimate,
       animatedRef,
+      completedDate,
       getDeleteTaskIndex,
       getDetailsTaskIndex
     }
