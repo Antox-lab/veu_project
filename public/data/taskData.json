@@ -4,34 +4,47 @@
     "message": "Make a project using vue js.",
     "photo": "img/todo.png",
     "time": "22.12.21",
-    "status": "To Do"
+    "status": "To Do",
+    "addDate": "17.10.2021"
   },
   {
     "name": "Components introduce",
     "message": "Create separate components for active content",
     "photo": "img/done.png",
     "time": "25.10.21",
-    "status": "Done"
+    "status": "Done",
+    "addDate": "18.10.2021"
   },
   {
     "name": "Application migration",
     "message": "Save application logic from the previous project",
     "photo": "img/in_progress.png",
     "time": "26.10.21",
-    "status": "In progress"
+    "status": "In progress",
+    "addDate": "22.10.2021"
   },
   {
     "name": "Data as array",
     "message": "Load content data from a dataset",
     "photo": "img/in_progress.png",
     "time": "27.10.21",
-    "status": "In progress"
+    "status": "In progress",
+    "addDate": "05.11.2021"
   },
   {
     "name": "GitHub push",
     "message": "Create a repository on GitHub",
     "photo": "img/in_progress.png",
     "time": "28.10.21",
-    "status": "In progress"
+    "status": "In progress",
+    "addDate": "05.11.2021"
+  },
+  {
+    "name": "Vuex introduce",
+    "message": "Make a project using vuex js.",
+    "photo": "img/todo.png",
+    "time": "18.01.22",
+    "status": "To Do",
+    "addDate": "12.01.2022"
   }
 ]

@@ -19,6 +19,7 @@ div
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useStore } from 'vuex'
 import IContentActivity from '../types/contentactivity.interfaces'
 
 export default defineComponent({
@@ -30,9 +31,11 @@ export default defineComponent({
     time: String,
     images: Array
   },
-  setup (props, { emit }) {
+  setup () {
+    const store = useStore()
+
     function getImageIndex (activity: IContentActivity) {
-      emit('sendImageIndex', activity.value)
+      store.commit('setNotificationCount', activity.value)
     }
 
     return {

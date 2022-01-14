@@ -21,12 +21,12 @@ const routes: Array<RouteRecordRaw> = [
     component: Activity
   },
   {
-    path: '/Comingcalendar',
+    path: '/calendar',
     name: 'Calendar',
     component: () => import('../views/Calendar.vue')
   },
   {
-    path: '/Comingfiles',
+    path: '/files',
     name: 'Files',
     component: () => import('../views/Files.vue')
   },

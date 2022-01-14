@@ -91,13 +91,14 @@ base-content(title="kanban")
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import BaseContent from '../components/BaseContent.vue'
 import KanbanTask from '../components/contentKanban/KanbanTask.vue'
 import TaskDetailsModal from '../modals/TaskDetailsModal.vue'
 import ModalFind from '../modals/ModalFind.vue'
 import ITasks from '../types/tasks.interfaces'
 import { todosStatus, todosIcons } from '../types/enums'
-import { useDetails, useEditable } from '../components/use/methodsUseCards'
+import { useDetails, useEditable, useLoadData } from '../components/use/methodsUseCards'
 
 export default defineComponent({
   name: 'Kanban',
@@ -108,7 +109,6 @@ export default defineComponent({
     ModalFind
   },
   setup () {
-    const items = ref([] as ITasks[])
     const itemsToDo = ref([] as ITasks[])
     const itemsInProgress = ref([] as ITasks[])
     const itemsDone = ref([] as ITasks[])
@@ -119,6 +119,9 @@ export default defineComponent({
     const clearButtonShow = ref(false)
     const findText = ref('')
     const findResult = ref('')
+    const store = useStore()
+
+    const { items } = useLoadData()
 
     const { detailsShow, taskIndex, taskDetails } = useDetails(true)
     const { editableComponent } = useEditable()
@@ -136,14 +139,11 @@ export default defineComponent({
     createListsData()
 
     function createListsData () {
-      const data = sessionStorage.getItem('data')
-      if (data) {
-        items.value = JSON.parse(data)
-        itemsToDo.value = getFilteredArray(todosStatus.todo)
-        itemsInProgress.value = getFilteredArray(todosStatus.inprogress)
-        itemsDone.value = getFilteredArray(todosStatus.done)
-        clearButtonShow.value = false
-      }
+      items.value = store.state.tasks.itemData
+      itemsToDo.value = getFilteredArray(todosStatus.todo)
+      itemsInProgress.value = getFilteredArray(todosStatus.inprogress)
+      itemsDone.value = getFilteredArray(todosStatus.done)
+      clearButtonShow.value = false
     }
 
     function getFilteredArray (status: todosStatus) {
@@ -176,7 +176,7 @@ export default defineComponent({
         const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
         items.value[itemDragIndex].status = todosStatus.todo
         items.value[itemDragIndex].photo = todosIcons.todo
-        sessionStorage.setItem('data', JSON.stringify(items.value))
+        store.commit('setData', items.value)
         createListsData()
       }
     }
@@ -186,7 +186,7 @@ export default defineComponent({
         const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
         items.value[itemDragIndex].status = todosStatus.inprogress
         items.value[itemDragIndex].photo = todosIcons.inprogress
-        sessionStorage.setItem('data', JSON.stringify(items.value))
+        store.commit('setData', items.value)
         createListsData()
       }
     }
@@ -196,7 +196,7 @@ export default defineComponent({
         const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
         items.value[itemDragIndex].status = todosStatus.done
         items.value[itemDragIndex].photo = todosIcons.done
-        sessionStorage.setItem('data', JSON.stringify(items.value))
+        store.commit('setData', items.value)
         createListsData()
       }
     }

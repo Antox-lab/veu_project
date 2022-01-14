@@ -26,7 +26,7 @@ base-content(title="tasks")
     :time="item.time"
     :alt="item.status"
     :title="item.status"
-    :addAnimate="i == items.length - 1 && addTaskAnimate ? true : false"
+    :addAnimate="i == items.length - 1 && addTaskAnimate"
     :positionIndex="i"
     @getDeleteTaskIndex="taskDelete(i)"
     @getDetailsTaskIndex="taskDetails(i)")
@@ -34,6 +34,7 @@ base-content(title="tasks")
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import BaseContent from '../components/BaseContent.vue'
 import TasksTask from '../components/contentTasks/TasksTask.vue'
 import ModalAdd from '../modals/ModalAdd.vue'
@@ -57,22 +58,18 @@ export default defineComponent({
   setup () {
     const formShow = ref(addData.formShow)
     const addTaskAnimate = ref(addData.addTaskAnimate)
-
+    const store = useStore()
     const { detailsShow, taskIndex, taskDetails } = useDetails(addData.formShow)
     const { editableComponent } = useEditable()
     const { items } = useLoadData()
 
     function taskDelete (i: number) {
-      items.value.splice(i, 1)
+      store.commit('taskDelete', i)
       addTaskAnimate.value = false
-      sessionStorage.setItem('data', JSON.stringify(items.value))
     }
 
     function getDataAdd () {
-      const data = sessionStorage.getItem('data')
-      if (data) {
-        items.value = JSON.parse(data)
-      }
+      items.value = store.state.tasks.itemData
       formShow.value = true
       detailsShow.value = true
     }

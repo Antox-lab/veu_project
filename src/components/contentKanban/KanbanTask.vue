@@ -86,6 +86,7 @@ h2 {
     background-color: #ddd;
     border-radius: 0.7rem;
     width: 100%;
+    user-select: none;
 }
 
 .dateFormat {

@@ -1,22 +1,17 @@
 <template lang="pug">
 #main
   button.sidebarButton(@click="sidebarShow = !sidebarShow") {{sidebarButtonCaption}}
-  the-sidebar(:notificationCount="notificationCount"
-  :class="{sidebarShow: sidebarShow}")
+  the-sidebar(:class="{sidebarShow: sidebarShow}")
   .contentBar
     the-header
-    router-view(@sendIndex="notificationCount = $event")
+    router-view
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
+import { useStore } from 'vuex'
 import TheSidebar from './components/TheSidebar.vue'
 import TheHeader from './components/TheHeader.vue'
-import { INotification } from './types/layout.interfaces'
-
-const dataCount: INotification = {
-  notificationCount: 0
-}
 
 export default defineComponent({
   name: 'Layout',
@@ -25,24 +20,22 @@ export default defineComponent({
     TheHeader
   },
   setup () {
-    const notificationCount = ref(dataCount.notificationCount)
     const sidebarShow = ref(true)
     const sidebarButtonCaption = ref('▼')
+    const store = useStore()
 
-    fetch('data/taskData.json')
-      .then((responce) => {
-        return responce.json()
-      })
-      .then((data) => {
-        sessionStorage.setItem('data', JSON.stringify(data))
-      })
+    const loadData = localStorage.getItem('data')
+    if (loadData) {
+      store.dispatch('getDataStorage')
+    } else {
+      store.dispatch('getData')
+    }
 
     watch(() => sidebarShow.value, () => {
       sidebarShow.value ? sidebarButtonCaption.value = '▼' : sidebarButtonCaption.value = '▲'
     })
 
     return {
-      notificationCount,
       sidebarShow,
       sidebarButtonCaption
     }

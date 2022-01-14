@@ -21,7 +21,7 @@ base-modal(:title="titleForm")
         input.formElementDate(type="date" v-model="dateToValue" :min="dateFromValue")
   hr
   .formButtonsSection
-    button.formButton(title="Add task" @click="sendFindValues") Find task
+    button.formButton(title="Find task" @click="sendFindValues") Find task
 </template>
 
 <script lang="ts">
