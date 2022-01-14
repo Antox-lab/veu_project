@@ -15,18 +15,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import IHeaderTitlebanner from '../types/headertitlebanner.interfaces'
-
-const titleBannerItems: IHeaderTitlebanner[] = [
-  { name: 'User1', photo: './img/user_1.png' },
-  { name: 'User2', photo: './img/user_2.png' },
-  { name: 'User3', photo: './img/user_3.png' }
-]
 
 export default defineComponent({
   name: 'HeaderTitlebanner',
   setup () {
-    const items = ref(titleBannerItems)
+    const store = useStore()
+    const items = ref(store.state.header.titleBannerItems as IHeaderTitlebanner[])
 
     return {
       items

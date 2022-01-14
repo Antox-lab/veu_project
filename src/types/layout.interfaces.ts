@@ -3,7 +3,3 @@ export interface ILayout {
     status: string,
     photo: string,
 }
-
-export interface INotification {
-    notificationCount: number
-}

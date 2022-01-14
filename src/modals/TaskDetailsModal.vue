@@ -31,6 +31,7 @@ base-modal(:title="titleForm")
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, computed } from 'vue'
+import { useStore } from 'vuex'
 import { todosStatus, todosIcons } from '../types/enums'
 import BaseModal from './BaseModal.vue'
 import { useLoadData } from '../components/use/methodsUseCards'
@@ -52,6 +53,7 @@ export default defineComponent({
   },
   emits: ['closeEditModal'],
   setup (props, { emit }) {
+    const store = useStore()
     const buttonCaption = ref('Edit')
     const formEdit = ref(false)
     const visibleSaveButton = ref(false)
@@ -105,26 +107,25 @@ export default defineComponent({
       newItem.name = nameModel.value as string
       newItem.message = messageModel.value as string
       newItem.time = setDateValue(dateModel.value) as string
-      items.value[index] = newItem
       switch (statusModel.value) {
         case todosStatus.todo: {
-          items.value[index].status = todosStatus.todo
-          items.value[index].photo = todosIcons.todo
+          newItem.status = todosStatus.todo
+          newItem.photo = todosIcons.todo
           break
         }
         case todosStatus.inprogress: {
-          items.value[index].status = todosStatus.inprogress
-          items.value[index].photo = todosIcons.inprogress
+          newItem.status = todosStatus.inprogress
+          newItem.photo = todosIcons.inprogress
           break
         }
         case todosStatus.done: {
-          items.value[index].status = todosStatus.done
-          items.value[index].photo = todosIcons.done
+          newItem.status = todosStatus.done
+          newItem.photo = todosIcons.done
           break
         }
         default: break
       }
-      sessionStorage.setItem('data', JSON.stringify(items.value))
+      store.commit('editItem', [index, newItem])
       emit('closeEditModal', false)
     }
 

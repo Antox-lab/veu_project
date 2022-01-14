@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useStore } from 'vuex'
 import { todosStatus } from '../../types/enums'
 import ITasks from '../../types/tasks.interfaces'
 
@@ -30,10 +31,9 @@ export function useEditable () {
 
 export function useLoadData () {
   const items = ref([] as ITasks[])
-  const loadData = sessionStorage.getItem('data')
-  if (loadData) {
-    items.value = JSON.parse(loadData)
-  }
+  const store = useStore()
+
+  items.value = store.state.tasks.itemData
 
   return {
     items

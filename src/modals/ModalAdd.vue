@@ -28,10 +28,11 @@ base-modal(:title="titleForm")
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import BaseModal from './BaseModal.vue'
 import IModalAdd from '../types/modalAdd.interface'
 import { todosStatus, todosIcons } from '../types/enums'
-import { useLoadData } from '../components/use/methodsUseCards'
+// import { useLoadData } from '../components/use/methodsUseCards'
 
 const dataModalAdd: IModalAdd = {
   completedDate: '',
@@ -56,6 +57,7 @@ export default defineComponent({
   },
   emits: ['closeAddModal'],
   setup (props, { emit }) {
+    const store = useStore()
     const inputIndicate = ref(dataModalAdd.inputIndicate)
     const textareaIndicate = ref(dataModalAdd.textareaIndicate)
     const dataIndicate = ref(dataModalAdd.dataIndicate)
@@ -67,8 +69,6 @@ export default defineComponent({
     const completedDate = ref(dataModalAdd.completedDate)
     const formShow = ref(dataModalAdd.formShow)
 
-    const { items } = useLoadData()
-
     function setParseData () {
       const dd = completedDate.value.slice(8)
       const mm = completedDate.value.slice(5, 7)
@@ -77,18 +77,33 @@ export default defineComponent({
       addTaskAnimate.value = true
     }
 
+    function setParseDataNow () {
+      const nowDate = new Date()
+      const dd = fixDateZero(nowDate.getDate())
+      const mm = fixDateZero(nowDate.getMonth() + 1)
+      const yy = nowDate.getFullYear()
+      return `${dd}.${mm}.${yy}`
+    }
+
+    function fixDateZero (value: number) {
+      if (value < 10) {
+        return '0' + value
+      }
+      return value
+    }
+
     function pushTaskData () {
       inputsIndicatorClear()
       if (isFormValidate(title.value, description.value)) {
         setParseData()
-        items.value.push({
+        store.commit('pushItem', {
           name: title.value[0].toUpperCase() + title.value.slice(1),
           message: description.value[0].toUpperCase() + description.value.slice(1),
           photo: todosIcons.todo,
           time: completedDate.value,
-          status: todosStatus.todo
+          status: todosStatus.todo,
+          addDate: setParseDataNow()
         })
-        sessionStorage.setItem('data', JSON.stringify(items.value))
         visibleAddForm()
         emit('closeAddModal', false)
       } else {
@@ -152,6 +167,7 @@ export default defineComponent({
       errors,
       showError,
       setParseData,
+      setParseDataNow,
       completedDate,
       title,
       description,

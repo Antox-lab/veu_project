@@ -14,20 +14,15 @@
       a.menuLink(href="#") My Tasks
       .notificationConteiner
         a.menuLink(href="#") Notification
-        #notificationCount {{notificationCount}}
+        #notificationCount {{$store.state.sidebar.notificationCount}}
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import SidebarActiveUser from './SidebarActiveUser.vue'
 import SidebarTasksStatus from './SidebarTasksStatus.vue'
 import { ILayout } from '../types/layout.interfaces'
-
-const dataApp: ILayout = {
-  name: 'Jane',
-  status: 'Owner',
-  photo: 'img/user_active.png'
-}
 
 export default defineComponent({
   name: 'TheSidebar',
@@ -35,14 +30,9 @@ export default defineComponent({
     SidebarActiveUser,
     SidebarTasksStatus
   },
-  props: {
-    notificationCount: {
-      type: Number,
-      default: 0
-    }
-  },
   setup () {
-    const items = ref(dataApp)
+    const store = useStore()
+    const items = ref(store.state.sidebar.dataApp as ILayout)
 
     return {
       items
