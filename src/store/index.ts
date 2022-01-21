@@ -1,9 +1,9 @@
 import { createStore } from 'vuex'
-import sidebar from './sidebar'
-import header from './header'
-import activity from './activity'
-import tasks from './tasks'
-import calendar from './calendar'
+import sidebar from './modules/sidebar'
+import header from './modules/header'
+import activity from './modules/activity'
+import tasks from './modules/tasks'
+import calendar from './modules/calendar'
 
 export default createStore({
   state: {
