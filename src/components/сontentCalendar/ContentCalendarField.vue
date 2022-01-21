@@ -38,6 +38,8 @@ task-details-modal(v-if="!detailsShow"
 import { defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import TaskDetailsModal from '../../modals/TaskDetailsModal.vue'
+import ITasks from '../../types/tasks.interfaces'
+import { IContentCalendar, ICurrentObject } from '../../types/contentcalendar.interfaces'
 import { todosStatus } from '../../types/enums'
 import { useDetails, useLoadData } from '../use/methodsUseCards'
 
@@ -48,7 +50,7 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
-    const itemsData = ref([] as any[])
+    const itemsData = ref([] as IContentCalendar[])
     const itemsCount = ref(42)
     const statusColor = ref(0)
 
@@ -69,8 +71,8 @@ export default defineComponent({
           })
         } else {
           const currentDate = setParseDate(i - firstDayPosition + 1, month + 1, year)
-          const currentObject = [] as any[]
-          items.value.forEach((item: any, key: number) => {
+          const currentObject = [] as ICurrentObject[]
+          items.value.forEach((item: ITasks, key: number) => {
             if (currentDate === item.addDate) {
               currentObject.push({
                 name: item.name,

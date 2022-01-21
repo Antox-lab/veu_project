@@ -37,54 +37,22 @@ base-content(title="kanban")
         span.headCaptionCount Cards count: {{countDone}}
   hr
   .headSection
-    .headItem(@dragenter.prevent
+    .headItem(v-for="(item, col) in eachList" :key="col"
+      @dragenter.prevent
       @dragover.prevent
-      @drop="onDropToDo($event)"
-      :class="{cardItem: checkItems(itemsToDo)}")
-      p.dropCaption(v-if="checkItems(itemsToDo)") Drop here...
-      div(v-for="(item, i) in itemsToDo"
-      :key="'col1'+i")
+      @drop="onDrop($event, item.status, item.icon)"
+      :class="{cardItem: checkItems(item.list)}")
+      p.dropCaption(v-if="checkItems(item.list)") Drop here...
+      div(v-for="(item, i) in item.list"
+      :key="col+'-'+i")
         kanban-task(
-        draggable="true"
+        :draggable="item.status != enumStatus.done"
         :name="item.name"
         :title="item.name"
         :status="item.status"
         :date="item.time"
-        :overTime="isOverTime(item.time)"
-        :oneDayTime="isOneDayTime(item.time)"
-        @dragstart="onDrag($event, item.listIndex)"
-        @getDetailsTaskIndex="taskDetails(item.listIndex)")
-    .headItem(@dragenter.prevent
-      @dragover.prevent
-      @drop="onDropInprogress($event)"
-      :class="{cardItem: checkItems(itemsInProgress)}")
-      p.dropCaption(v-if="checkItems(itemsInProgress)") Drop here...
-      div(v-for="(item, i) in itemsInProgress"
-      :key="'col2'+i")
-        kanban-task(
-        draggable="true"
-        :name="item.name"
-        :title="item.name"
-        :status="item.status"
-        :date="item.time"
-        :overTime="isOverTime(item.time)"
-        :oneDayTime="isOneDayTime(item.time)"
-        @dragstart="onDrag($event, item.listIndex)"
-        @getDetailsTaskIndex="taskDetails(item.listIndex)")
-    .headItem(@dragenter.prevent
-      @dragover.prevent
-      @drop="onDropDone($event)"
-      :class="{cardItem: checkItems(itemsDone)}")
-      p.dropCaption(v-if="checkItems(itemsDone)") Drop here...
-      div(v-for="(item, i) in itemsDone"
-      :key="'col3'+i")
-        kanban-task(
-        :name="item.name"
-        :title="item.name"
-        :status="item.status"
-        :date="item.time"
-        :overTime="false"
-        :oneDayTime="false"
+        :overTime="isOverTime(item.time) && item.status != enumStatus.done"
+        :oneDayTime="isOneDayTime(item.time) && item.status != enumStatus.done"
         @dragstart="onDrag($event, item.listIndex)"
         @getDetailsTaskIndex="taskDetails(item.listIndex)")
 </template>
@@ -97,8 +65,10 @@ import KanbanTask from '../components/contentKanban/KanbanTask.vue'
 import TaskDetailsModal from '../modals/TaskDetailsModal.vue'
 import ModalFind from '../modals/ModalFind.vue'
 import ITasks from '../types/tasks.interfaces'
+import ITasksFilter from '../types/tasks.filter.interfaces'
 import { todosStatus, todosIcons } from '../types/enums'
 import { useDetails, useEditable, useLoadData } from '../components/use/methodsUseCards'
+import { parseDataNow, parseDateValueToInt, parseDateForItem } from '../components/use/methodsHelpers'
 
 export default defineComponent({
   name: 'Kanban',
@@ -119,12 +89,18 @@ export default defineComponent({
     const clearButtonShow = ref(false)
     const findText = ref('')
     const findResult = ref('')
+    const enumStatus = ref(todosStatus)
+    const enumIcon = ref(todosIcons)
     const store = useStore()
 
     const { items } = useLoadData()
 
     const { detailsShow, taskIndex, taskDetails } = useDetails(true)
     const { editableComponent } = useEditable()
+
+    const eachList = ref([{ status: enumStatus.value.todo, icon: enumIcon.value.todo, list: itemsToDo },
+      { status: enumStatus.value.inprogress, icon: enumIcon.value.inprogress, list: itemsInProgress },
+      { status: enumStatus.value.done, icon: enumIcon.value.done, list: itemsDone }])
 
     const countToDo = computed(() => {
       return itemsToDo.value.length
@@ -147,7 +123,7 @@ export default defineComponent({
     }
 
     function getFilteredArray (status: todosStatus) {
-      return items.value.filter((element: any, key: number) => {
+      return items.value.filter((element: ITasksFilter, key: number) => {
         element.listIndex = key
         return element.status === status
       })
@@ -171,31 +147,11 @@ export default defineComponent({
       }
     }
 
-    function onDropToDo (e: DragEvent) {
+    function onDrop (e: DragEvent, status: todosStatus, icon: todosIcons) {
       if (e.dataTransfer) {
         const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
-        items.value[itemDragIndex].status = todosStatus.todo
-        items.value[itemDragIndex].photo = todosIcons.todo
-        store.commit('setData', items.value)
-        createListsData()
-      }
-    }
-
-    function onDropInprogress (e: DragEvent) {
-      if (e.dataTransfer) {
-        const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
-        items.value[itemDragIndex].status = todosStatus.inprogress
-        items.value[itemDragIndex].photo = todosIcons.inprogress
-        store.commit('setData', items.value)
-        createListsData()
-      }
-    }
-
-    function onDropDone (e: DragEvent) {
-      if (e.dataTransfer) {
-        const itemDragIndex = parseInt(e.dataTransfer.getData('dragItem'))
-        items.value[itemDragIndex].status = todosStatus.done
-        items.value[itemDragIndex].photo = todosIcons.done
+        items.value[itemDragIndex].status = status
+        items.value[itemDragIndex].photo = icon
         store.commit('setData', items.value)
         createListsData()
       }
@@ -205,32 +161,12 @@ export default defineComponent({
       return !items.length
     }
 
-    function parseDataNow (value: string) {
-      const dd = value.slice(0, 2)
-      const mm = value.slice(3, 5)
-      const yy = value.slice(6)
-      const getDate = new Date(`20${yy}-${mm}-${dd}`)
-      const nowDate = new Date()
-      return Math.ceil((getDate.getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24))
-    }
-
     function isOverTime (value: string) {
       return parseDataNow(value) < 0
     }
 
     function isOneDayTime (value: string) {
       return parseDataNow(value) === 1
-    }
-
-    function parseDateValueToInt (value: string) {
-      return parseInt(value.replace(/[^0-9]/g, ''))
-    }
-
-    function parseDateForItem (value: string) {
-      const day = value.slice(0, 2)
-      const month = value.slice(3, 5)
-      const year = value.slice(6)
-      return parseInt('20' + year + month + day)
     }
 
     function fromFind (findValue: string) {
@@ -271,27 +207,17 @@ export default defineComponent({
 
     return {
       items,
-      itemsToDo,
-      itemsInProgress,
-      itemsDone,
-      newItemsToDo,
-      newItemsInProgress,
-      newItemsDone,
       formShow,
       clearButtonShow,
       detailsShow,
       taskIndex,
-      getFilteredArray,
       taskDetails,
       getDataAdd,
       getCloseFindWindow,
       editableComponent,
       onDrag,
-      onDropToDo,
-      onDropInprogress,
-      onDropDone,
+      onDrop,
       checkItems,
-      parseDataNow,
       isOverTime,
       isOneDayTime,
       countToDo,
@@ -299,7 +225,10 @@ export default defineComponent({
       countDone,
       fromFind,
       findText,
-      findResult
+      findResult,
+      enumStatus,
+      enumIcon,
+      eachList
     }
   }
 })

@@ -1,3 +1,5 @@
+import IActivity from '../../types/activity.interfaces'
+
 export default {
   state: {
     dataActivity: [
@@ -25,6 +27,6 @@ export default {
           { name: 'Image4', imageItem: './img/image_4.png' }
         ]
       }
-    ]
+    ] as IActivity[]
   }
 }

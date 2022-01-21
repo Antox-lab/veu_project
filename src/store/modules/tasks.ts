@@ -1,26 +1,29 @@
+import { Commit } from 'vuex'
+import ITasks from '../../types/tasks.interfaces'
+
 export default {
   state: {
-    itemData: []
+    itemData: [] as ITasks[]
   },
   mutations: {
-    setData (state: any, data: []) {
+    setData (state: { itemData: ITasks[] }, data: []): void {
       state.itemData = data
     },
-    taskDelete (state: any, index: number) {
+    taskDelete (state: { itemData: ITasks[] }, index: number): void {
       state.itemData.splice(index, 1)
       localStorage.setItem('data', JSON.stringify(state.itemData))
     },
-    pushItem (state: any, item: any) {
+    pushItem (state: { itemData: ITasks[] }, item: ITasks): void {
       state.itemData.push(item)
       localStorage.setItem('data', JSON.stringify(state.itemData))
     },
-    editItem (state: any, item: any) {
-      state.itemData[item[0]] = item[1]
+    editItem (state: { itemData: ITasks[] }, item: ITasks[]): void {
+      state.itemData[item[0] as unknown as number] = item[1]
       localStorage.setItem('data', JSON.stringify(state.itemData))
     }
   },
   actions: {
-    getData ({ commit }: {commit: any}) {
+    getData ({ commit }: {commit: Commit}): void {
       fetch('data/taskData.json')
         .then((responce) => {
           return responce.json()
@@ -29,7 +32,7 @@ export default {
           commit('setData', data)
         })
     },
-    getDataStorage ({ commit }: {commit: any}) {
+    getDataStorage ({ commit }: {commit: Commit}): void {
       const loadData = localStorage.getItem('data')
       if (loadData) {
         commit('setData', JSON.parse(loadData))

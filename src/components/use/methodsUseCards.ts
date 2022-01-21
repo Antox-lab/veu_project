@@ -3,11 +3,11 @@ import { useStore } from 'vuex'
 import { todosStatus } from '../../types/enums'
 import ITasks from '../../types/tasks.interfaces'
 
-export function useDetails (bol: boolean) {
-  const detailsShow = ref(bol)
+export function useDetails (visibled: boolean): any {
+  const detailsShow = ref(visibled)
   const taskIndex = ref(0)
 
-  function taskDetails (i: number) {
+  function taskDetails (i: number): void {
     detailsShow.value = false
     taskIndex.value = i
   }
@@ -19,8 +19,8 @@ export function useDetails (bol: boolean) {
   }
 }
 
-export function useEditable () {
-  function editableComponent (status: string) {
+export function useEditable (): any {
+  function editableComponent (status: string): boolean {
     return status !== todosStatus.done
   }
 
@@ -29,7 +29,7 @@ export function useEditable () {
   }
 }
 
-export function useLoadData () {
+export function useLoadData (): any {
   const items = ref([] as ITasks[])
   const store = useStore()
 
